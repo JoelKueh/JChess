@@ -40,13 +40,6 @@ namespace JChessV3
         public void chessBoardReset()
         {
             Array.Copy(chessBoardPieces, 0, chessBoardPieces, 0, 64);
-            //for (int column = 0; column < 8; column++)
-            //{
-            //    for (int row = 0; row < 8; row++)
-            //    {
-            //        chessBoardPieces[column, row] = chessBoardResetArr[column, row];
-            //    }
-            //}
         }
 
         public void printChessBoardArray(int[,] arr)
@@ -60,9 +53,14 @@ namespace JChessV3
             }
         }
 
-        public int getChessBoardArray(int column, int row)
+        public int getChessBoardSquare(int column, int row)
         {
             return chessBoardPieces[row, column];
+        }
+
+        public void handleMouseClick(MouseState mouseState)
+        {
+
         }
     }
 }

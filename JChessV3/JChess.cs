@@ -42,8 +42,19 @@ namespace JChessV3
         //int windWidth;
         //int windHeight;
 
-        int[] columnPositions = { 0, 0, 0, 0, 0, 0, 0, 0 };
-        int[] rowPositions = { 0, 0, 0, 0, 0, 0, 0, 0 };
+        private MouseState mouseState;
+        bool mouseLeftPressed;
+        struct HeldPiece
+        {
+            public int piece;
+            public int column;
+            public int row;
+        }
+        private HeldPiece heldPiece;
+
+
+        int[] columnPositions = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        int[] rowPositions = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         int chessBoardWidth = 0;
         #endregion
 
@@ -61,7 +72,7 @@ namespace JChessV3
             // Setting up some value things
             _graphics.PreferredBackBufferWidth = 1920;
             _graphics.PreferredBackBufferHeight = 1080;
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = true;
 
             _graphics.ApplyChanges();
 
@@ -105,12 +116,35 @@ namespace JChessV3
 
             // Updating some important variables
 
+            mouseState = Mouse.GetState();
+            if (mouseState.LeftButton == ButtonState.Pressed && !mouseLeftPressed)
+            {
+                mouseLeftPressed = true;
+
+                heldPiece.column = checkMouseColumn();
+                heldPiece.row = checkMouseRow();
+                if (heldPiece.column != -1 && heldPiece.row != -1)
+                {
+                    heldPiece.piece = myChessBoard.getChessBoardSquare(heldPiece.column, heldPiece.row);
+                }
+
+                Debug.Write(checkMouseColumn() + 1);
+                Debug.Write(", ");
+                Debug.WriteLine(checkMouseRow() + 1);
+
+                Debug.WriteLine(heldPiece.piece);
+            }
+            else if(mouseState.LeftButton == ButtonState.Released)
+            {
+                mouseLeftPressed = false;
+                heldPiece.column = 0;
+                heldPiece.row = 0;
+                heldPiece.piece = 0;
+            }
+
             // TODO: Update to allow for nonfullscreen play.
             //windWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             //windHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-
-            // Debug
-
 
             base.Update(gameTime);
         }
@@ -124,10 +158,13 @@ namespace JChessV3
             drawChessBoardFromCenter(960, 540, 800);
             drawAllPieces();
 
-            _spriteBatch.End();
+            if(heldPiece.piece != 0)
+            {
+                drawHeldPiece(heldPiece.piece);
+                Debug.WriteLine("HI");
+            }
 
-            // DEBUG
-            //Debug.WriteLine(windWidth);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
@@ -161,6 +198,9 @@ namespace JChessV3
                     _spriteBatch.Draw(rect, tempDrawSquare, tempColor);
                 }
             }
+
+            columnPositions[8] = topLeftX + chessBoardDrawWidth;
+            rowPositions[8] = topLeftY + chessBoardDrawWidth;
         }
 
         private void drawAllPieces()
@@ -169,17 +209,51 @@ namespace JChessV3
             {
                 for(int row = 0; row < 8; row++)
                 {
-                    drawPiece(column, row, myChessBoard.getChessBoardArray(column, row));
+                    drawPiece(column, row, myChessBoard.getChessBoardSquare(column, row));
                 }
             }
         }
 
         private void drawPiece(int column, int row, int piece)
         {
-            Texture2D tempTexture = rect;
+            Texture2D tempBoardPieceTexture = identifyPiece(piece);
+
+            if (tempBoardPieceTexture != null)
+            {
+                _spriteBatch.Draw(tempBoardPieceTexture, new Rectangle(columnPositions[column], rowPositions[row], chessBoardWidth / 8, chessBoardWidth / 8), Color.White);
+            }
+        }
+
+        private int checkMouseColumn()
+        {
+            for (int column = 0; column <= 7; column++)
+            {
+                if (mouseState.X > columnPositions[column] && mouseState.X < columnPositions[column + 1])
+                {
+                    return column;
+                }
+            }
+            return -1;
+        }
+
+        private int checkMouseRow()
+        {
+            for (int row = 0; row <= 7; row++)
+            {
+                if (mouseState.Y > rowPositions[row] && mouseState.Y < rowPositions[row + 1])
+                {
+                    return row;
+                }
+            }
+            return -1;
+        }
+
+        private Texture2D identifyPiece(int piece)
+        {
+            Texture2D tempTexture = null;
             switch (piece)
             {
-                case Const.WHITE_KING: tempTexture = whiteKingSprite; break; 
+                case Const.WHITE_KING: tempTexture = whiteKingSprite; break;
                 case Const.WHITE_QUEEN: tempTexture = whiteQueenSprite; break;
                 case Const.WHITE_ROOK: tempTexture = whiteRookSprite; break;
                 case Const.WHITE_BISHOP: tempTexture = whiteBishopSprite; break;
@@ -196,10 +270,16 @@ namespace JChessV3
                 default: tempTexture = null; break;
             }
 
-            if (tempTexture != null)
-            {
-                _spriteBatch.Draw(tempTexture, new Rectangle(columnPositions[column], rowPositions[row], chessBoardWidth / 8, chessBoardWidth / 8), Color.White);
-            }
+            return tempTexture;
+        }
+
+        private void drawHeldPiece(int piece)
+        {
+            Texture2D tempHeldPieceTexture = identifyPiece(piece);
+            int x = mouseState.X - chessBoardWidth / 16;
+            int y = mouseState.Y - chessBoardWidth / 16;
+
+            _spriteBatch.Draw(tempHeldPieceTexture, new Rectangle(x, y, chessBoardWidth / 8, chessBoardWidth / 8), Color.White);
         }
     }
 }
