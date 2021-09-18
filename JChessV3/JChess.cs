@@ -116,31 +116,7 @@ namespace JChessV3
 
             // Updating some important variables
 
-            mouseState = Mouse.GetState();
-            if (mouseState.LeftButton == ButtonState.Pressed && !mouseLeftPressed)
-            {
-                mouseLeftPressed = true;
-
-                heldPiece.column = checkMouseColumn();
-                heldPiece.row = checkMouseRow();
-                if (heldPiece.column != -1 && heldPiece.row != -1)
-                {
-                    heldPiece.piece = myChessBoard.getChessBoardSquare(heldPiece.column, heldPiece.row);
-                }
-
-                Debug.Write(checkMouseColumn() + 1);
-                Debug.Write(", ");
-                Debug.WriteLine(checkMouseRow() + 1);
-
-                Debug.WriteLine(heldPiece.piece);
-            }
-            else if(mouseState.LeftButton == ButtonState.Released)
-            {
-                mouseLeftPressed = false;
-                heldPiece.column = 0;
-                heldPiece.row = 0;
-                heldPiece.piece = 0;
-            }
+            handleMouseCheck();
 
             // TODO: Update to allow for nonfullscreen play.
             //windWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
@@ -156,12 +132,16 @@ namespace JChessV3
             _spriteBatch.Begin();
 
             drawChessBoardFromCenter(960, 540, 800);
-            drawAllPieces();
 
             if(heldPiece.piece != 0)
             {
+                drawHeldPieceMoves(myChessBoard.getPieceMoves(heldPiece.column, heldPiece.row));
+                drawAllPiecesWithSkip(heldPiece.column, heldPiece.row);
                 drawHeldPiece(heldPiece.piece);
-                Debug.WriteLine("HI");
+            }
+            else
+            {
+                drawAllPieces();
             }
 
             _spriteBatch.End();
@@ -203,13 +183,55 @@ namespace JChessV3
             rowPositions[8] = topLeftY + chessBoardDrawWidth;
         }
 
+        private void drawHeldPieceMoves(int[,] inputArray)
+        {
+            for (int column = 0; column < 8; column++)
+            {
+                for (int row = 0; row < 8; row++)
+                {
+                    Color tempColor = new Color(0,0,0);
+                    //Debug.WriteLine(inputArray[column, row]);
+                    if (inputArray[row, column] != 0)
+                    {
+                        if (inputArray[row, column] == 1)
+                        {
+                            tempColor = myConst.freeSquare;
+                        }
+                        else if(inputArray[row, column] == -1)
+                        {
+                            tempColor = myConst.takeSquare;
+                        }
+
+                        int squareWidthTemp = columnPositions[1] - columnPositions[0];
+
+                        Rectangle tempDrawSquare = new Rectangle(columnPositions[column], rowPositions[row], squareWidthTemp, squareWidthTemp);
+                        _spriteBatch.Draw(rect, tempDrawSquare, tempColor * 0.5f);
+                    }
+                }
+            }
+        }
+
         private void drawAllPieces()
+        {
+            for (int column = 0; column < 8; column++)
+            {
+                for (int row = 0; row < 8; row++)
+                {
+                    drawPiece(column, row, myChessBoard.getChessBoardSquare(column, row));
+                }
+            }
+        }
+
+        private void drawAllPiecesWithSkip(int columnSkip, int rowSkip)
         {
             for(int column = 0; column < 8; column++)
             {
                 for(int row = 0; row < 8; row++)
                 {
-                    drawPiece(column, row, myChessBoard.getChessBoardSquare(column, row));
+                    if(column != columnSkip || row != rowSkip)
+                    {
+                        drawPiece(column, row, myChessBoard.getChessBoardSquare(column, row));
+                    }
                 }
             }
         }
@@ -280,6 +302,35 @@ namespace JChessV3
             int y = mouseState.Y - chessBoardWidth / 16;
 
             _spriteBatch.Draw(tempHeldPieceTexture, new Rectangle(x, y, chessBoardWidth / 8, chessBoardWidth / 8), Color.White);
+        }
+
+        public void handleMouseCheck()
+        {
+            mouseState = Mouse.GetState();
+            if (mouseState.LeftButton == ButtonState.Pressed && !mouseLeftPressed)
+            {
+                mouseLeftPressed = true;
+
+                heldPiece.column = checkMouseColumn();
+                heldPiece.row = checkMouseRow();
+                if (heldPiece.column != -1 && heldPiece.row != -1)
+                {
+                    heldPiece.piece = myChessBoard.getChessBoardSquare(heldPiece.column, heldPiece.row);
+                }
+
+                //Debug.Write(checkMouseColumn() + 1);
+                //Debug.Write(", ");
+                //Debug.WriteLine(checkMouseRow() + 1);
+
+                //Debug.WriteLine(heldPiece.piece);
+            }
+            else if (mouseState.LeftButton == ButtonState.Released)
+            {
+                mouseLeftPressed = false;
+                heldPiece.column = 0;
+                heldPiece.row = 0;
+                heldPiece.piece = 0;
+            }
         }
     }
 }
