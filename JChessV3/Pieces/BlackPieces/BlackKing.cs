@@ -11,7 +11,14 @@ namespace JChessV3.Pieces.BlackPieces
 
         }
 
-        public int[,] generateMoves(int[,] inputArr, int row, int column)
+        /// <summary>
+        /// Generates the moves for a Black King. Does not account for danger squares. TODO: Castle
+        /// </summary>
+        /// <param name="inputArr"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public int[,] GenerateMoves(int[,] inputArr, int row, int column)
         {
             int[,] possibleKingMoves = new int[8, 8];
 

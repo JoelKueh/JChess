@@ -94,19 +94,19 @@ namespace JChessV3
         {
             switch (chessBoardPieces[row, column])
             {
-                case Const.WHITE_KING: return myWhiteKing.generateMoves(chessBoardPieces, row, column);
-                case Const.WHITE_QUEEN: return myWhiteQueen.generateMoves(chessBoardPieces, row, column);
-                case Const.WHITE_ROOK: return myWhiteRook.generateMoves(chessBoardPieces, row, column);
-                case Const.WHITE_BISHOP: return myWhiteBishop.generateMoves(chessBoardPieces, row, column);
-                case Const.WHITE_KNIGHT: return myWhiteKnight.generateMoves(chessBoardPieces, row, column);
-                case Const.WHITE_PAWN: return myWhitePawn.generateMoves(chessBoardPieces, row, column);
+                case Const.WHITE_KING: return myWhiteKing.GenerateMoves(chessBoardPieces, row, column);
+                case Const.WHITE_QUEEN: return myWhiteQueen.GenerateMoves(chessBoardPieces, row, column);
+                case Const.WHITE_ROOK: return myWhiteRook.GenerateMoves(chessBoardPieces, row, column);
+                case Const.WHITE_BISHOP: return myWhiteBishop.GenerateMoves(chessBoardPieces, row, column);
+                case Const.WHITE_KNIGHT: return myWhiteKnight.GenerateMoves(chessBoardPieces, row, column);
+                case Const.WHITE_PAWN: return myWhitePawn.GenerateMoves(chessBoardPieces, row, column);
 
-                case Const.BLACK_PAWN: return myBlackPawn.generateMoves(chessBoardPieces, row, column);
-                case Const.BLACK_KNIGHT: return myBlackKnight.generateMoves(chessBoardPieces, row, column);
-                case Const.BLACK_BISHOP: return myBlackBishop.generateMoves(chessBoardPieces, row, column);
-                case Const.BLACK_ROOK: return myBlackRook.generateMoves(chessBoardPieces, row, column);
-                case Const.BLACK_QUEEN: return myBlackQueen.generateMoves(chessBoardPieces, row, column);
-                case Const.BLACK_KING: return myBlackKing.generateMoves(chessBoardPieces, row, column);
+                case Const.BLACK_PAWN: return myBlackPawn.GenerateMoves(chessBoardPieces, row, column);
+                case Const.BLACK_KNIGHT: return myBlackKnight.GenerateMoves(chessBoardPieces, row, column);
+                case Const.BLACK_BISHOP: return myBlackBishop.GenerateMoves(chessBoardPieces, row, column);
+                case Const.BLACK_ROOK: return myBlackRook.GenerateMoves(chessBoardPieces, row, column);
+                case Const.BLACK_QUEEN: return myBlackQueen.GenerateMoves(chessBoardPieces, row, column);
+                case Const.BLACK_KING: return myBlackKing.GenerateMoves(chessBoardPieces, row, column);
             }
             return new int[8,8];
         }

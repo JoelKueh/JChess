@@ -11,7 +11,14 @@ namespace JChessV3.Pieces.WhitePieces
 
         }
 
-        public int[,] generateMoves(int[,] inputBoard, int row, int column)
+        /// <summary>
+        /// Generates the moves for a White Pawn. Does not account for pins, TODO: Enpassant
+        /// </summary>
+        /// <param name="inputBoard"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public int[,] GenerateMoves(int[,] inputBoard, int row, int column)
         {
             int[,] possiblePawnMoves = new int[8,8];
 

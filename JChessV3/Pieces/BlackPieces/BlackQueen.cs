@@ -15,11 +15,18 @@ namespace JChessV3.Pieces.BlackPieces
             queenBlackRook = new BlackRook();
         }
 
-        public int[,] generateMoves(int[,] inputArr, int row, int column)
+        /// <summary>
+        /// Generates the moves for a Black Queen. Does not account for pins.
+        /// </summary>
+        /// <param name="inputArr"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public int[,] GenerateMoves(int[,] inputArr, int row, int column)
         {
             int[,] possibleQueenMoves = new int[8, 8];
-            int[,] queenRookMoves = queenBlackRook.generateMoves(inputArr, row, column);
-            int[,] queenBishopMoves = queenBlackBishop.generateMoves(inputArr, row, column);
+            int[,] queenRookMoves = queenBlackRook.GenerateMoves(inputArr, row, column);
+            int[,] queenBishopMoves = queenBlackBishop.GenerateMoves(inputArr, row, column);
 
             for(int row_x = 0; row_x < 8; row_x++)
             {

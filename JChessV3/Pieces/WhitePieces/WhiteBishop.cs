@@ -11,7 +11,14 @@ namespace JChessV3.Pieces.WhitePieces
 
         }
 
-        public int[,] generateMoves(int[,] inputArr, int row, int column)
+        /// <summary>
+        /// Gemerates the moves for a White Bishop. Does not account for pins.
+        /// </summary>
+        /// <param name="inputArr"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public int[,] GenerateMoves(int[,] inputArr, int row, int column)
         {
             int[,] possibleBishopMoves = new int[8, 8];
             
