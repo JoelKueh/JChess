@@ -37,6 +37,14 @@ namespace JChessV3
         public const int BLACK_ROOK = -4;
         public const int BLACK_QUEEN = -5;
         public const int BLACK_KING = -6;
+
+        public const int C_BLACK_KING = -61;
+        public const int C_WHITE_KING = 61;
+        public const int C_BLACK_ROOK = -41;
+        public const int C_WHITE_ROOK = 41;
+        public const int ENP_BLACK_PAWN = -11;
+        public const int ENP_WHITE_PAWN = 11;
+
         #endregion
     }
 }
