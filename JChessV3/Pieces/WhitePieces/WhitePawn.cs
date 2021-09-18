@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-using System.Diagnostics;
-
-namespace JChessV3.Pieces
+namespace JChessV3.Pieces.WhitePieces
 {
     class WhitePawn : Piece
     {
@@ -37,7 +35,6 @@ namespace JChessV3.Pieces
             
             if (row == 6)
             {
-                Debug.WriteLine("hi");
                 if (inputBoard[row - 1, column] == 0)
                 {
                     possiblePawnMoves[row - 1, column] = 1;

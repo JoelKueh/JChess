@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace JChessV3.Pieces
+namespace JChessV3.Pieces.BlackPieces
 {
-    class WhiteRook
+    class BlackRook
     {
-        public WhiteRook()
+        public BlackRook()
         {
 
         }
@@ -25,12 +25,12 @@ namespace JChessV3.Pieces
                     {
                         possibleRookMoves[row_i, column] = 1;
                     }
-                    else if(inputArr[row_i, column] < 0)
+                    else if(inputArr[row_i, column] > 0)
                     {
                         possibleRookMoves[row_i, column] = -1;
                         stopped = true;
                     }
-                    else if(inputArr[row_i, column] > 0)
+                    else if(inputArr[row_i, column] < 0)
                     {
                         stopped = true;
                     }
@@ -51,12 +51,12 @@ namespace JChessV3.Pieces
                     {
                         possibleRookMoves[row_i, column] = 1;
                     }
-                    else if (inputArr[row_i, column] < 0)
+                    else if (inputArr[row_i, column] > 0)
                     {
                         possibleRookMoves[row_i, column] = -1;
                         stopped = true;
                     }
-                    else if (inputArr[row_i, column] > 0)
+                    else if (inputArr[row_i, column] < 0)
                     {
                         stopped = true;
                     }
@@ -77,12 +77,12 @@ namespace JChessV3.Pieces
                     {
                         possibleRookMoves[row, col_i] = 1;
                     }
-                    else if (inputArr[row, col_i] < 0)
+                    else if (inputArr[row, col_i] > 0)
                     {
                         possibleRookMoves[row, col_i] = -1;
                         stopped = true;
                     }
-                    else if (inputArr[row, col_i] > 0)
+                    else if (inputArr[row, col_i] < 0)
                     {
                         stopped = true;
                     }
@@ -103,12 +103,12 @@ namespace JChessV3.Pieces
                     {
                         possibleRookMoves[row, col_i] = 1;
                     }
-                    else if (inputArr[row, col_i] < 0)
+                    else if (inputArr[row, col_i] > 0)
                     {
                         possibleRookMoves[row, col_i] = -1;
                         stopped = true;
                     }
-                    else if (inputArr[row, col_i] > 0)
+                    else if (inputArr[row, col_i] < 0)
                     {
                         stopped = true;
                     }

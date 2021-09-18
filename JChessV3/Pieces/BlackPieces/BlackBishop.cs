@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace JChessV3.Pieces
+namespace JChessV3.Pieces.BlackPieces
 {
-    class WhiteBishop
+    class BlackBishop
     {
-        public WhiteBishop()
+        public BlackBishop()
         {
 
         }
@@ -26,12 +26,12 @@ namespace JChessV3.Pieces
                     {
                         possibleBishopMoves[row_i, col_i] = 1;
                     }
-                    else if (inputArr[row_i, col_i] < 0)
+                    else if (inputArr[row_i, col_i] > 0)
                     {
                         possibleBishopMoves[row_i, col_i] = -1;
                         stopped = true;
                     }
-                    else if (inputArr[row_i, col_i] > 0)
+                    else if (inputArr[row_i, col_i] < 0)
                     {
                         stopped = true;
                     }
@@ -53,12 +53,12 @@ namespace JChessV3.Pieces
                     {
                         possibleBishopMoves[row_i, col_i] = 1;
                     }
-                    else if (inputArr[row_i, col_i] < 0)
+                    else if (inputArr[row_i, col_i] > 0)
                     {
                         possibleBishopMoves[row_i, col_i] = -1;
                         stopped = true;
                     }
-                    else if (inputArr[row_i, col_i] > 0)
+                    else if (inputArr[row_i, col_i] < 0)
                     {
                         stopped = true;
                     }
@@ -80,12 +80,12 @@ namespace JChessV3.Pieces
                     {
                         possibleBishopMoves[row_i, col_i] = 1;
                     }
-                    else if (inputArr[row_i, col_i] < 0)
+                    else if (inputArr[row_i, col_i] > 0)
                     {
                         possibleBishopMoves[row_i, col_i] = -1;
                         stopped = true;
                     }
-                    else if (inputArr[row_i, col_i] > 0)
+                    else if (inputArr[row_i, col_i] < 0)
                     {
                         stopped = true;
                     }
@@ -107,12 +107,12 @@ namespace JChessV3.Pieces
                     {
                         possibleBishopMoves[row_i, col_i] = 1;
                     }
-                    else if (inputArr[row_i, col_i] < 0)
+                    else if (inputArr[row_i, col_i] > 0)
                     {
                         possibleBishopMoves[row_i, col_i] = -1;
                         stopped = true;
                     }
-                    else if (inputArr[row_i, col_i] > 0)
+                    else if (inputArr[row_i, col_i] < 0)
                     {
                         stopped = true;
                     }

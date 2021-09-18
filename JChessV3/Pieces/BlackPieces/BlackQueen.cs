@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace JChessV3.Pieces
+namespace JChessV3.Pieces.BlackPieces
 {
-    class WhiteQueen
+    class BlackQueen
     {
-        WhiteBishop queenWhiteBishop;
-        WhiteRook queenWhiteRook;
+        BlackBishop queenBlackBishop;
+        BlackRook queenBlackRook;
 
-        public WhiteQueen()
+        public BlackQueen()
         {
-            queenWhiteBishop = new WhiteBishop();
-            queenWhiteRook = new WhiteRook();
+            queenBlackBishop = new BlackBishop();
+            queenBlackRook = new BlackRook();
         }
 
         public int[,] generateMoves(int[,] inputArr, int row, int column)
         {
             int[,] possibleQueenMoves = new int[8, 8];
-            int[,] queenRookMoves = queenWhiteRook.generateMoves(inputArr, row, column);
-            int[,] queenBishopMoves = queenWhiteBishop.generateMoves(inputArr, row, column);
+            int[,] queenRookMoves = queenBlackRook.generateMoves(inputArr, row, column);
+            int[,] queenBishopMoves = queenBlackBishop.generateMoves(inputArr, row, column);
 
             for(int row_x = 0; row_x < 8; row_x++)
             {
