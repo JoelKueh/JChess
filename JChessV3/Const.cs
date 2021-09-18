@@ -18,6 +18,8 @@ namespace JChessV3
         public Color backgroundColor = new Color(33, 33, 33);
         public Color lightSquare = new Color(150, 110, 80);
         public Color darkSquare = new Color(100, 70, 40);
+        public Color freeSquare = new Color(91, 146, 229);
+        public Color takeSquare = new Color(220, 20, 60);
         #endregion
 
         #region Piece Shortcut
