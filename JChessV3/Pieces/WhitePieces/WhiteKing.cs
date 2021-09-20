@@ -120,5 +120,10 @@ namespace JChessV3.Pieces.WhitePieces
 
             return possibleKingMoves;
         }
+
+        public int[,] GenerateDangerSquares(int[,] inputArr)
+        {
+
+        }
     }
 }

@@ -69,12 +69,19 @@ namespace JChessV3
             myBlackKing = new BlackKing();
         }
 
-        public void chessBoardReset()
+        /// <summary>
+        /// Resets the Chess Board
+        /// </summary>
+        public void ChessBoardReset()
         {
             Array.Copy(chessBoardResetArr, 0, chessBoardPieces, 0, 64);
         }
 
-        public void printChessBoardArray(int[,] arr)
+        /// <summary>
+        /// Prints the whole chess board array to the Output. (Will be deleted later).
+        /// </summary>
+        /// <param name="arr"></param>
+        public void PrintChessBoardArray(int[,] arr)
         {
             for (int column = 0; column < 8; column++)
             {
@@ -85,12 +92,25 @@ namespace JChessV3
             }
         }
 
-        public int getChessBoardSquare(int column, int row)
+        /// <summary>
+        /// Returns the chess board piece at the inputted coordinates.
+        /// </summary>
+        /// <param name="column"></param>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        public int GetChessBoardSquare(int column, int row)
         {
             return chessBoardPieces[row, column];
         }
 
-        public int[,] getPieceMoves(int column, int row)
+        /// <summary>
+        /// Takes an input of a column and row, then checks the chess board array for the piece at those coordinates, then returns the array of possible moves that the piece
+        /// can make.
+        /// </summary>
+        /// <param name="column"></param>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        public int[,] GetPieceMoves(int column, int row)
         {
             switch (chessBoardPieces[row, column])
             {
@@ -118,5 +138,17 @@ namespace JChessV3
         //        int rowNum = i / 8;
         //    }
         //}
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="possibleMoves"></param>
+        /// <param name="currentBoard"></param>
+        /// <returns></returns>
+        public int[,] CheckPinnedPiece(int[,] possibleMoves, int[,] currentBoard)
+        {
+            
+        }
     }
 }
