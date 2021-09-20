@@ -146,9 +146,9 @@ namespace JChessV3
         /// <param name="possibleMoves"></param>
         /// <param name="currentBoard"></param>
         /// <returns></returns>
-        public int[,] CheckPinnedPiece(int[,] possibleMoves, int[,] currentBoard)
-        {
+        //public int[,] CheckPinnedPiece(int[,] possibleMoves, int[,] currentBoard)
+        //{
             
-        }
+        //}
     }
 }
