@@ -37,9 +37,9 @@ namespace JChessV3
             chessBoardResetArr = new int[8, 8]
               { {-4,-2,-3,-5,-6,-3,-2,-4 },
                 {-1,-1,-1,-1,-1,-1,-1,-1 },
-                { 0, 0, 0, 4, 0, 0, 0, 0 },
-                { 1, 0, 0, 5, 6, -1, 0, -1 },
-                { 0, 0, 0, 0, 0, -2, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, -3, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 1, 1, 1, 1, 1, 1, 1, 1 },
                 { 4, 2, 3, 5, 6, 3, 2, 4 } };
@@ -131,6 +131,27 @@ namespace JChessV3
             return new int[8,8];
         }
 
+        public int[,] GetPieceThreats(int column, int row)
+        {
+            switch (chessBoardPieces[row, column])
+            {
+                case Const.WHITE_KING: return myWhiteKing.GenerateThreats(chessBoardPieces, row, column);
+                case Const.WHITE_QUEEN: return myWhiteQueen.GenerateThreats(chessBoardPieces, row, column);
+                case Const.WHITE_ROOK: return myWhiteRook.GenerateThreats(chessBoardPieces, row, column);
+                case Const.WHITE_BISHOP: return myWhiteBishop.GenerateThreats(chessBoardPieces, row, column);
+                case Const.WHITE_KNIGHT: return myWhiteKnight.GenerateThreats(chessBoardPieces, row, column);
+                case Const.WHITE_PAWN: return myWhitePawn.GenerateThreats(chessBoardPieces, row, column);
+
+                case Const.BLACK_PAWN: return myBlackPawn.GenerateThreats(chessBoardPieces, row, column);
+                case Const.BLACK_KNIGHT: return myBlackKnight.GenerateThreats(chessBoardPieces, row, column);
+                case Const.BLACK_BISHOP: return myBlackBishop.GenerateThreats(chessBoardPieces, row, column);
+                case Const.BLACK_ROOK: return myBlackRook.GenerateThreats(chessBoardPieces, row, column);
+                case Const.BLACK_QUEEN: return myBlackQueen.GenerateThreats(chessBoardPieces, row, column);
+                case Const.BLACK_KING: return myBlackKing.GenerateThreats(chessBoardPieces, row, column);
+            }
+            return new int[8, 8];
+        }
+
         //public int[,] readFenString(string fenInput)
         //{
         //    for (int i = 0; i < fenInput.Length; i++)
@@ -146,9 +167,50 @@ namespace JChessV3
         /// <param name="possibleMoves"></param>
         /// <param name="currentBoard"></param>
         /// <returns></returns>
-        //public int[,] CheckPinnedPiece(int[,] possibleMoves, int[,] currentBoard)
-        //{
-            
-        //}
+        public int[,] CheckPinnedPiece(int[,] possibleMoves, int[,] currentBoard)
+        {
+            return new int[8, 8];
+        }
+
+        /// <summary>
+        /// Returns the danger squares that the king cannot move to given the color of the king. TODO: Make a generate threats method for each of the pieces because it is different
+        /// than the generate possible moves method.
+        /// </summary>
+        /// <param name="inputArr"></param>
+        /// <returns></returns>
+        public int[,] GenerateDangerSquares(int defendingKing)
+        {
+            int[,] dangerSquares = new int[8, 8];
+
+            for (int row = 0; row < 8; row++)
+            {
+                for (int column = 0; column < 8; column++)
+                {
+                    int[,] tempStorage = new int[8, 8];
+                    
+                    if (chessBoardPieces[row, column] < 0 && defendingKing < 0)
+                    {
+                        tempStorage = GetPieceThreats(column, row);
+                    }
+                    else if (chessBoardPieces[row, column] > 0 && defendingKing > 0)
+                    {
+                        tempStorage = GetPieceThreats(column, row);
+                    }
+
+                    for (int row_temp = 0; row_temp < 8; row_temp++)
+                    {
+                        for (int column_temp = 0; column_temp < 8; column_temp++)
+                        {
+                            if (tempStorage[row_temp, column_temp] == 1)
+                            {
+                                dangerSquares[row_temp, column_temp] = 1;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return dangerSquares;
+        }
     }
 }

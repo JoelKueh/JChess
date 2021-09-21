@@ -46,5 +46,37 @@ namespace JChessV3.Pieces.BlackPieces
 
             return possibleQueenMoves;
         }
+
+        /// <summary>
+        /// Generates the threats for a black queen.
+        /// </summary>
+        /// <param name="inputArr"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public int[,] GenerateThreats(int[,] inputArr, int row, int column)
+        {
+            int[,] possibleQueenThreats = new int[8, 8];
+            int[,] queenRookThreats = queenBlackRook.GenerateThreats(inputArr, row, column);
+            int[,] queenBishopThreats = queenBlackBishop.GenerateThreats(inputArr, row, column);
+
+            for (int row_x = 0; row_x < 8; row_x++)
+            {
+                for (int column_x = 0; column_x < 8; column_x++)
+                {
+                    if (queenRookThreats[row_x, column_x] != 0)
+                    {
+                        possibleQueenThreats[row_x, column_x] = queenRookThreats[row_x, column_x];
+                    }
+
+                    if (queenBishopThreats[row_x, column_x] != 0)
+                    {
+                        possibleQueenThreats[row_x, column_x] = queenBishopThreats[row_x, column_x];
+                    }
+                }
+            }
+
+            return possibleQueenThreats;
+        }
     }
 }

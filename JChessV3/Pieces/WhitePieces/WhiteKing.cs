@@ -121,9 +121,58 @@ namespace JChessV3.Pieces.WhitePieces
             return possibleKingMoves;
         }
 
-        public int[,] GenerateDangerSquares(int[,] inputArr)
+        /// <summary>
+        /// Generates the threats for a white king
+        /// </summary>
+        /// <param name="inputArr"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public int[,] GenerateThreats(int[,] inputArr, int row, int column)
         {
+            int[,] possibleKingMoves = new int[8, 8];
 
+            if (row - 1 >= 0 && column - 1 >= 0)
+            {
+                possibleKingMoves[row - 1, column - 1] = 1;
+            }
+
+            if (row - 1 >= 0)
+            {
+                possibleKingMoves[row - 1, column] = 1;
+            }
+
+            if (row - 1 >= 0 && column + 1 < 8)
+            {
+                possibleKingMoves[row - 1, column + 1] = 1;
+            }
+
+            if (column - 1 >= 0)
+            {
+                possibleKingMoves[row, column - 1] = 1;
+            }
+
+            if (column + 1 < 8)
+            {
+                possibleKingMoves[row, column + 1] = 1;
+            }
+
+            if (row + 1 < 8 && column - 1 >= 0)
+            {
+                possibleKingMoves[row + 1, column - 1] = 1;
+            }
+
+            if (row + 1 < 8)
+            {
+                possibleKingMoves[row + 1, column] = 1;
+            }
+
+            if (row + 1 < 8 && column + 1 < 8)
+            {
+                possibleKingMoves[row + 1, column + 1] = 1;
+            }
+
+            return possibleKingMoves;
         }
     }
 }

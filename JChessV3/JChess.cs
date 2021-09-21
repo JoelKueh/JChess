@@ -134,7 +134,11 @@ namespace JChessV3
 
             if(heldPiece.piece != 0)
             {
-                DrawHeldPieceMoves(myChessBoard.GetPieceMoves(heldPiece.column, heldPiece.row));
+                // DEBUG
+                //DrawHeldPieceMoves(myChessBoard.GenerateDangerSquares(-6));
+                DrawHeldPieceMoves(myChessBoard.GetPieceThreats(heldPiece.column, heldPiece.row));
+
+                //DrawHeldPieceMoves(myChessBoard.GetPieceMoves(heldPiece.column, heldPiece.row));
                 DrawAllPiecesWithSkip(heldPiece.column, heldPiece.row);
                 DrawHeldPiece(heldPiece.piece);
             }

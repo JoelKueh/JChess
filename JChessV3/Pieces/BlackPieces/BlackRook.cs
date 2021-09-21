@@ -128,5 +128,91 @@ namespace JChessV3.Pieces.BlackPieces
 
             return possibleRookMoves;
         }
+
+        /// <summary>
+        /// Generates the threats for a black rook. TODO: Castling
+        /// </summary>
+        /// <param name="inputArr"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public int[,] GenerateThreats(int[,] inputArr, int row, int column)
+        {
+            int[,] possibleRookThreats = new int[8, 8];
+
+            bool stopped = false;
+            for (int i = 1; !stopped; i++)
+            {
+                int row_i = row - i;
+                if (row_i >= 0)
+                {
+                    if (inputArr[row_i, column] != 0)
+                    {
+                        possibleRookThreats[row_i, column] = 1;
+                        stopped = true;
+                    }
+                }
+                else
+                {
+                    stopped = true;
+                }
+            }
+
+            stopped = false;
+            for (int i = 1; !stopped; i++)
+            {
+                int row_i = row + i;
+                if (row_i < 8)
+                {
+                    if (inputArr[row_i, column] != 0)
+                    {
+                        possibleRookThreats[row_i, column] = 1;
+                        stopped = true;
+                    }
+                }
+                else
+                {
+                    stopped = true;
+                }
+            }
+
+            stopped = false;
+            for (int i = 1; !stopped; i++)
+            {
+                int col_i = column - i;
+                if (col_i >= 0)
+                {
+                    if (inputArr[row, col_i] != 0)
+                    {
+                        possibleRookThreats[row, col_i] = 1;
+                        stopped = true;
+                    }
+                }
+                else
+                {
+                    stopped = true;
+                }
+            }
+
+            stopped = false;
+            for (int i = 1; !stopped; i++)
+            {
+                int col_i = column + i;
+                if (col_i < 8)
+                {
+                    if (inputArr[row, col_i] != 0)
+                    {
+                        possibleRookThreats[row, col_i] = 1;
+                        stopped = true;
+                    }
+                }
+                else
+                {
+                    stopped = true;
+                }
+            }
+
+            return possibleRookThreats;
+        }
     }
 }

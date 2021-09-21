@@ -55,5 +55,32 @@ namespace JChessV3.Pieces.WhitePieces
 
             return possiblePawnMoves;
         }
+
+        /// <summary>
+        /// Generates the squares which the pawn is threatening.
+        /// </summary>
+        /// <param name="inputBoard"></param>
+        /// <param name="column"></param>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        public int[,] GenerateThreats(int[,] inputBoard, int row, int column)
+        {
+            int[,] possiblePawnThreats = new int[8, 8];
+
+            if (row - 1 >= 0)
+            {
+                if (column - 1 >= 0)
+                {
+                    possiblePawnThreats[row - 1, column - 1] = 1;
+                }
+
+                if (column + 1 < 8)
+                {
+                    possiblePawnThreats[row - 1, column + 1] = 1;
+                }
+            }
+
+            return possiblePawnThreats;
+        }
     }
 }
