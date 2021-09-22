@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 // DEBUG
-using System.Diagnostics;
 
 namespace JChessV3
 {
@@ -79,7 +78,7 @@ namespace JChessV3
             myConst = new Const();
 
             myChessBoard = new ChessBoardLogic();
-            myChessBoard.chessBoardReset();
+            myChessBoard.ChessBoardReset();
 
             base.Initialize();
         }
@@ -116,31 +115,7 @@ namespace JChessV3
 
             // Updating some important variables
 
-            mouseState = Mouse.GetState();
-            if (mouseState.LeftButton == ButtonState.Pressed && !mouseLeftPressed)
-            {
-                mouseLeftPressed = true;
-
-                heldPiece.column = checkMouseColumn();
-                heldPiece.row = checkMouseRow();
-                if (heldPiece.column != -1 && heldPiece.row != -1)
-                {
-                    heldPiece.piece = myChessBoard.getChessBoardSquare(heldPiece.column, heldPiece.row);
-                }
-
-                Debug.Write(checkMouseColumn() + 1);
-                Debug.Write(", ");
-                Debug.WriteLine(checkMouseRow() + 1);
-
-                Debug.WriteLine(heldPiece.piece);
-            }
-            else if(mouseState.LeftButton == ButtonState.Released)
-            {
-                mouseLeftPressed = false;
-                heldPiece.column = 0;
-                heldPiece.row = 0;
-                heldPiece.piece = 0;
-            }
+            HandleMouseCheck();
 
             // TODO: Update to allow for nonfullscreen play.
             //windWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
@@ -155,13 +130,21 @@ namespace JChessV3
 
             _spriteBatch.Begin();
 
-            drawChessBoardFromCenter(960, 540, 800);
-            drawAllPieces();
+            DrawChessBoardFromCenter(960, 540, 800);
 
             if(heldPiece.piece != 0)
             {
-                drawHeldPiece(heldPiece.piece);
-                Debug.WriteLine("HI");
+                // DEBUG
+                //DrawHeldPieceMoves(myChessBoard.GenerateDangerSquares(6));
+                //DrawHeldPieceMoves(myChessBoard.GetPieceThreats(heldPiece.column, heldPiece.row));
+
+                DrawHeldPieceMoves(myChessBoard.GetPieceMoves(heldPiece.column, heldPiece.row));
+                DrawAllPiecesWithSkip(heldPiece.column, heldPiece.row);
+                DrawHeldPiece(heldPiece.piece);
+            }
+            else
+            {
+                DrawAllPieces();
             }
 
             _spriteBatch.End();
@@ -169,12 +152,24 @@ namespace JChessV3
             base.Draw(gameTime);
         }
 
-        private void drawChessBoardFromCenter(int centerX, int centerY, int chessBoardDrawWidthCenter)
+        /// <summary>
+        /// Calls the draw chess board method but taks coords for the center of the chess board.
+        /// </summary>
+        /// <param name="centerX"></param>
+        /// <param name="centerY"></param>
+        /// <param name="chessBoardDrawWidthCenter"></param>
+        private void DrawChessBoardFromCenter(int centerX, int centerY, int chessBoardDrawWidthCenter)
         {
-            drawChessBoard(centerX - chessBoardDrawWidthCenter / 2, centerY - chessBoardDrawWidthCenter / 2, chessBoardDrawWidthCenter);
+            DrawChessBoard(centerX - chessBoardDrawWidthCenter / 2, centerY - chessBoardDrawWidthCenter / 2, chessBoardDrawWidthCenter);
         }
 
-        private void drawChessBoard(int topLeftX, int topLeftY, int chessBoardDrawWidth)
+        /// <summary>
+        /// Draws the chess board given the top left point and the width of the board.
+        /// </summary>
+        /// <param name="topLeftX"></param>
+        /// <param name="topLeftY"></param>
+        /// <param name="chessBoardDrawWidth"></param>
+        private void DrawChessBoard(int topLeftX, int topLeftY, int chessBoardDrawWidth)
         {
             for (int column = 0; column < 8; column++)
             {
@@ -203,20 +198,84 @@ namespace JChessV3
             rowPositions[8] = topLeftY + chessBoardDrawWidth;
         }
 
-        private void drawAllPieces()
+        /// <summary>
+        /// Draws an array of possible moves to the chess board. Blue for open squares and red for captures.
+        /// </summary>
+        /// <param name="inputArray"></param>
+        private void DrawHeldPieceMoves(int[,] inputArray)
+        {
+            for (int column = 0; column < 8; column++)
+            {
+                for (int row = 0; row < 8; row++)
+                {
+                    Color tempColor = new Color(0,0,0);
+                    //Debug.WriteLine(inputArray[column, row]);
+                    if (inputArray[row, column] != 0)
+                    {
+                        if (inputArray[row, column] == 1)
+                        {
+                            tempColor = myConst.freeSquare;
+                        }
+                        else if(inputArray[row, column] == -1)
+                        {
+                            tempColor = myConst.takeSquare;
+                        }
+                        else if (inputArray[row, column] == 2)
+                        {
+                            tempColor = myConst.specialMove;
+                        }
+
+                        int squareWidthTemp = columnPositions[1] - columnPositions[0];
+
+                        Rectangle tempDrawSquare = new Rectangle(columnPositions[column], rowPositions[row], squareWidthTemp, squareWidthTemp);
+                        _spriteBatch.Draw(rect, tempDrawSquare, tempColor * 0.5f);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws the pieces on the chess board.
+        /// </summary>
+        private void DrawAllPieces()
+        {
+            for (int column = 0; column < 8; column++)
+            {
+                for (int row = 0; row < 8; row++)
+                {
+                    DrawPiece(column, row, myChessBoard.GetChessBoardSquare(column, row));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws the pieces on the chess board, skipping the one that is currently held.
+        /// </summary>
+        /// <param name="columnSkip"></param>
+        /// <param name="rowSkip"></param>
+        private void DrawAllPiecesWithSkip(int columnSkip, int rowSkip)
         {
             for(int column = 0; column < 8; column++)
             {
                 for(int row = 0; row < 8; row++)
                 {
-                    drawPiece(column, row, myChessBoard.getChessBoardSquare(column, row));
+                    if(column != columnSkip || row != rowSkip)
+                    {
+                        DrawPiece(column, row, myChessBoard.GetChessBoardSquare(column, row));
+                    }
                 }
             }
         }
 
-        private void drawPiece(int column, int row, int piece)
+        /// <summary>
+        /// Draws a piece texture given its column, row, and number. (Uses the identify piece method).
+        /// </summary>
+        /// <param name="column"></param>
+        /// <param name="row"></param>
+        /// <param name="piece"></param>
+        private void DrawPiece(int column, int row, int piece)
         {
-            Texture2D tempBoardPieceTexture = identifyPiece(piece);
+            Texture2D tempBoardPieceTexture = IdentifyPiece(piece);
 
             if (tempBoardPieceTexture != null)
             {
@@ -224,7 +283,11 @@ namespace JChessV3
             }
         }
 
-        private int checkMouseColumn()
+        /// <summary>
+        /// Checks the column that the mouse is currently over.
+        /// </summary>
+        /// <returns></returns>
+        private int CheckMouseColumn()
         {
             for (int column = 0; column <= 7; column++)
             {
@@ -236,7 +299,11 @@ namespace JChessV3
             return -1;
         }
 
-        private int checkMouseRow()
+        /// <summary>
+        /// Checks the row that the mouse is currently over.
+        /// </summary>
+        /// <returns></returns>
+        private int CheckMouseRow()
         {
             for (int row = 0; row <= 7; row++)
             {
@@ -248,7 +315,12 @@ namespace JChessV3
             return -1;
         }
 
-        private Texture2D identifyPiece(int piece)
+        /// <summary>
+        /// Takes and input of the piece number and returns the Texture2D object associated with it.
+        /// </summary>
+        /// <param name="piece"></param>
+        /// <returns></returns>
+        private Texture2D IdentifyPiece(int piece)
         {
             Texture2D tempTexture = null;
             switch (piece)
@@ -267,19 +339,60 @@ namespace JChessV3
                 case Const.BLACK_QUEEN: tempTexture = blackQueenSprite; break;
                 case Const.BLACK_KING: tempTexture = blackKingSprite; break;
 
+                case Const.C_BLACK_KING: tempTexture = blackKingSprite; break;
+                case Const.C_WHITE_KING: tempTexture = whiteKingSprite; break;
+                case Const.C_BLACK_ROOK: tempTexture = blackRookSprite; break;
+                case Const.C_WHITE_ROOK: tempTexture = whiteRookSprite; break;
+
                 default: tempTexture = null; break;
             }
 
             return tempTexture;
         }
 
-        private void drawHeldPiece(int piece)
+        /// <summary>
+        /// Takes the held piece and uses the mouse location to draw it. (Uses the identify peice method).
+        /// </summary>
+        /// <param name="piece"></param>
+        private void DrawHeldPiece(int piece)
         {
-            Texture2D tempHeldPieceTexture = identifyPiece(piece);
+            Texture2D tempHeldPieceTexture = IdentifyPiece(piece);
             int x = mouseState.X - chessBoardWidth / 16;
             int y = mouseState.Y - chessBoardWidth / 16;
 
             _spriteBatch.Draw(tempHeldPieceTexture, new Rectangle(x, y, chessBoardWidth / 8, chessBoardWidth / 8), Color.White);
+        }
+
+        /// <summary>
+        /// Handles all of the updating of mouse values.
+        /// </summary>
+        public void HandleMouseCheck()
+        {
+            mouseState = Mouse.GetState();
+            if (mouseState.LeftButton == ButtonState.Pressed && !mouseLeftPressed)
+            {
+                mouseLeftPressed = true;
+
+                heldPiece.column = CheckMouseColumn();
+                heldPiece.row = CheckMouseRow();
+                if (heldPiece.column != -1 && heldPiece.row != -1)
+                {
+                    heldPiece.piece = myChessBoard.GetChessBoardSquare(heldPiece.column, heldPiece.row);
+                }
+
+                //Debug.Write(CheckMouseColumn() + 1);
+                //Debug.Write(", ");
+                //Debug.WriteLine(CheckMouseRow() + 1);
+
+                //Debug.WriteLine(heldPiece.piece);
+            }
+            else if (mouseState.LeftButton == ButtonState.Released)
+            {
+                mouseLeftPressed = false;
+                heldPiece.column = 0;
+                heldPiece.row = 0;
+                heldPiece.piece = 0;
+            }
         }
     }
 }
