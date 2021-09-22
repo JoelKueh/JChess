@@ -71,12 +71,12 @@ namespace JChessV3.Pieces.BlackPieces
             {
                 if (column - 1 >= 0)
                 {
-                    possiblePawnThreats[row + 1, column - 1] = -1;
+                    possiblePawnThreats[row + 1, column - 1] = 1;
                 }
 
                 if (column + 1 < 8)
                 {
-                    possiblePawnThreats[row + 1, column + 1] = -1;
+                    possiblePawnThreats[row + 1, column + 1] = 1;
                 }
             }
 

@@ -12,7 +12,7 @@ namespace JChessV3.Pieces.BlackPieces
         }
 
         /// <summary>
-        /// Generates the moves for a Black Rook. Does not account for pins. TODO: Castling
+        /// Generates the moves for a Black Rook. Does not account for pins.
         /// </summary>
         /// <param name="inputArr"></param>
         /// <param name="row"></param>
@@ -130,7 +130,7 @@ namespace JChessV3.Pieces.BlackPieces
         }
 
         /// <summary>
-        /// Generates the threats for a black rook. TODO: Castling
+        /// Generates the threats for a black rook.
         /// </summary>
         /// <param name="inputArr"></param>
         /// <param name="row"></param>
@@ -151,6 +151,10 @@ namespace JChessV3.Pieces.BlackPieces
                         possibleRookThreats[row_i, column] = 1;
                         stopped = true;
                     }
+                    else
+                    {
+                        possibleRookThreats[row_i, column] = 1;
+                    }
                 }
                 else
                 {
@@ -168,6 +172,10 @@ namespace JChessV3.Pieces.BlackPieces
                     {
                         possibleRookThreats[row_i, column] = 1;
                         stopped = true;
+                    }
+                    else
+                    {
+                        possibleRookThreats[row_i, column] = 1;
                     }
                 }
                 else
@@ -187,6 +195,10 @@ namespace JChessV3.Pieces.BlackPieces
                         possibleRookThreats[row, col_i] = 1;
                         stopped = true;
                     }
+                    else
+                    {
+                        possibleRookThreats[row, col_i] = 1;
+                    }
                 }
                 else
                 {
@@ -204,6 +216,10 @@ namespace JChessV3.Pieces.BlackPieces
                     {
                         possibleRookThreats[row, col_i] = 1;
                         stopped = true;
+                    }
+                    else
+                    {
+                        possibleRookThreats[row, col_i] = 1;
                     }
                 }
                 else

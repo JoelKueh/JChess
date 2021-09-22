@@ -130,7 +130,7 @@ namespace JChessV3.Pieces.WhitePieces
         }
 
         /// <summary>
-        /// Generates the threats for a white rook. TODO: Castling
+        /// Generates the threats for a white rook.
         /// </summary>
         /// <param name="inputArr"></param>
         /// <param name="row"></param>
@@ -151,6 +151,10 @@ namespace JChessV3.Pieces.WhitePieces
                         possibleRookThreats[row_i, column] = 1;
                         stopped = true;
                     }
+                    else
+                    {
+                        possibleRookThreats[row_i, column] = 1;
+                    }
                 }
                 else
                 {
@@ -168,6 +172,10 @@ namespace JChessV3.Pieces.WhitePieces
                     {
                         possibleRookThreats[row_i, column] = 1;
                         stopped = true;
+                    }
+                    else
+                    {
+                        possibleRookThreats[row_i, column] = 1;
                     }
                 }
                 else
@@ -187,6 +195,10 @@ namespace JChessV3.Pieces.WhitePieces
                         possibleRookThreats[row, col_i] = 1;
                         stopped = true;
                     }
+                    else
+                    {
+                        possibleRookThreats[row, col_i] = 1;
+                    }
                 }
                 else
                 {
@@ -204,6 +216,10 @@ namespace JChessV3.Pieces.WhitePieces
                     {
                         possibleRookThreats[row, col_i] = 1;
                         stopped = true;
+                    }
+                    else
+                    {
+                        possibleRookThreats[row, col_i] = 1;
                     }
                 }
                 else

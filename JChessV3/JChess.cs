@@ -135,10 +135,10 @@ namespace JChessV3
             if(heldPiece.piece != 0)
             {
                 // DEBUG
-                //DrawHeldPieceMoves(myChessBoard.GenerateDangerSquares(-6));
-                DrawHeldPieceMoves(myChessBoard.GetPieceThreats(heldPiece.column, heldPiece.row));
+                //DrawHeldPieceMoves(myChessBoard.GenerateDangerSquares(6));
+                //DrawHeldPieceMoves(myChessBoard.GetPieceThreats(heldPiece.column, heldPiece.row));
 
-                //DrawHeldPieceMoves(myChessBoard.GetPieceMoves(heldPiece.column, heldPiece.row));
+                DrawHeldPieceMoves(myChessBoard.GetPieceMoves(heldPiece.column, heldPiece.row));
                 DrawAllPiecesWithSkip(heldPiece.column, heldPiece.row);
                 DrawHeldPiece(heldPiece.piece);
             }
@@ -219,6 +219,10 @@ namespace JChessV3
                         else if(inputArray[row, column] == -1)
                         {
                             tempColor = myConst.takeSquare;
+                        }
+                        else if (inputArray[row, column] == 2)
+                        {
+                            tempColor = myConst.specialMove;
                         }
 
                         int squareWidthTemp = columnPositions[1] - columnPositions[0];
@@ -334,6 +338,11 @@ namespace JChessV3
                 case Const.BLACK_ROOK: tempTexture = blackRookSprite; break;
                 case Const.BLACK_QUEEN: tempTexture = blackQueenSprite; break;
                 case Const.BLACK_KING: tempTexture = blackKingSprite; break;
+
+                case Const.C_BLACK_KING: tempTexture = blackKingSprite; break;
+                case Const.C_WHITE_KING: tempTexture = whiteKingSprite; break;
+                case Const.C_BLACK_ROOK: tempTexture = blackRookSprite; break;
+                case Const.C_WHITE_ROOK: tempTexture = whiteRookSprite; break;
 
                 default: tempTexture = null; break;
             }

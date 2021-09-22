@@ -17,6 +17,7 @@ namespace JChessV3
     {
         private int[,] chessBoardPieces;
         private int[,] chessBoardResetArr;
+        private int[,] chessBoardTestArr;
 
         private WhitePawn myWhitePawn;
         private WhiteBishop myWhiteBishop;
@@ -35,24 +36,34 @@ namespace JChessV3
         public ChessBoardLogic()
         {
             chessBoardResetArr = new int[8, 8]
-              { {-4,-2,-3,-5,-6,-3,-2,-4 },
+              { {-41,-2,-3,-5,-61,-3,-2,-41 },
                 {-1,-1,-1,-1,-1,-1,-1,-1 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, -3, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 4, 2, 3, 5, 6, 3, 2, 4 } };
+                {41, 2, 3, 5, 61, 3, 2,41 } };
 
             chessBoardPieces = new int[8, 8]
-              { {-4,-2,-3,-5,-6,-3,-2,-4 },
+              { {-41,-2,-3,-5,-61,-3,-2,-41 },
                 {-1,-1,-1,-1,-1,-1,-1,-1 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 4, 2, 3, 5, 6, 3, 2, 4 } };
+                {41, 2, 3, 5,61, 3, 2,41 } };
+
+            chessBoardTestArr = new int[8, 8]
+              { {-41,0, 0, 0,-61, 0, 0,-41 },
+                {-1,-1,-1, 0, 0, 0, 0,-1 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 3, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 1, 1, 1, 0, 0, 1, 1, 1 },
+                {41, 0, 0, 0,61, 0, 0,41 } };
 
             myWhitePawn = new WhitePawn();
             myWhiteBishop = new WhiteBishop();
@@ -74,7 +85,8 @@ namespace JChessV3
         /// </summary>
         public void ChessBoardReset()
         {
-            Array.Copy(chessBoardResetArr, 0, chessBoardPieces, 0, 64);
+            //Array.Copy(chessBoardResetArr, 0, chessBoardPieces, 0, 64);
+            Array.Copy(chessBoardTestArr, 0, chessBoardPieces, 0, 64);
         }
 
         /// <summary>
@@ -114,7 +126,7 @@ namespace JChessV3
         {
             switch (chessBoardPieces[row, column])
             {
-                case Const.WHITE_KING: return myWhiteKing.GenerateMoves(chessBoardPieces, row, column);
+                case Const.WHITE_KING: return myWhiteKing.GenerateMoves(chessBoardPieces, GenerateDangerSquares(Const.WHITE), row, column);
                 case Const.WHITE_QUEEN: return myWhiteQueen.GenerateMoves(chessBoardPieces, row, column);
                 case Const.WHITE_ROOK: return myWhiteRook.GenerateMoves(chessBoardPieces, row, column);
                 case Const.WHITE_BISHOP: return myWhiteBishop.GenerateMoves(chessBoardPieces, row, column);
@@ -126,7 +138,14 @@ namespace JChessV3
                 case Const.BLACK_BISHOP: return myBlackBishop.GenerateMoves(chessBoardPieces, row, column);
                 case Const.BLACK_ROOK: return myBlackRook.GenerateMoves(chessBoardPieces, row, column);
                 case Const.BLACK_QUEEN: return myBlackQueen.GenerateMoves(chessBoardPieces, row, column);
-                case Const.BLACK_KING: return myBlackKing.GenerateMoves(chessBoardPieces, row, column);
+                case Const.BLACK_KING: return myBlackKing.GenerateMoves(chessBoardPieces, GenerateDangerSquares(Const.BLACK), row, column);
+
+                case Const.C_BLACK_KING: return myBlackKing.GeneratePreCastledMoves(chessBoardPieces, GenerateDangerSquares(Const.BLACK), row, column);
+                case Const.C_WHITE_KING: return myWhiteKing.GeneratePreCastledMoves(chessBoardPieces, GenerateDangerSquares(Const.WHITE), row, column);
+                case Const.C_BLACK_ROOK: return myBlackRook.GenerateMoves(chessBoardPieces, row, column);
+                case Const.C_WHITE_ROOK: return myWhiteRook.GenerateMoves(chessBoardPieces, row, column);
+
+                    //case Const.C_BLACK_KING: return myBlackKing.GenerateMoves
             }
             return new int[8,8];
         }
@@ -148,6 +167,11 @@ namespace JChessV3
                 case Const.BLACK_ROOK: return myBlackRook.GenerateThreats(chessBoardPieces, row, column);
                 case Const.BLACK_QUEEN: return myBlackQueen.GenerateThreats(chessBoardPieces, row, column);
                 case Const.BLACK_KING: return myBlackKing.GenerateThreats(chessBoardPieces, row, column);
+
+                case Const.C_BLACK_KING: return myBlackKing.GenerateThreats(chessBoardPieces, row, column);
+                case Const.C_WHITE_KING: return myWhiteKing.GenerateThreats(chessBoardPieces, row, column);
+                case Const.C_BLACK_ROOK: return myBlackRook.GenerateThreats(chessBoardPieces, row, column);
+                case Const.C_WHITE_ROOK: return myWhiteRook.GenerateThreats(chessBoardPieces, row, column);
             }
             return new int[8, 8];
         }
@@ -178,7 +202,7 @@ namespace JChessV3
         /// </summary>
         /// <param name="inputArr"></param>
         /// <returns></returns>
-        public int[,] GenerateDangerSquares(int defendingKing)
+        public int[,] GenerateDangerSquares(int defendingColor)
         {
             int[,] dangerSquares = new int[8, 8];
 
@@ -188,11 +212,11 @@ namespace JChessV3
                 {
                     int[,] tempStorage = new int[8, 8];
                     
-                    if (chessBoardPieces[row, column] < 0 && defendingKing < 0)
+                    if (chessBoardPieces[row, column] < 0 && defendingColor > 0)
                     {
                         tempStorage = GetPieceThreats(column, row);
                     }
-                    else if (chessBoardPieces[row, column] > 0 && defendingKing > 0)
+                    else if (chessBoardPieces[row, column] > 0 && defendingColor < 0)
                     {
                         tempStorage = GetPieceThreats(column, row);
                     }

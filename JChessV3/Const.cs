@@ -20,6 +20,7 @@ namespace JChessV3
         public Color darkSquare = new Color(100, 70, 40);
         public Color freeSquare = new Color(91, 146, 229);
         public Color takeSquare = new Color(220, 20, 60);
+        public Color specialMove = new Color(255, 255, 0);
         #endregion
 
         #region Piece Shortcut
@@ -44,6 +45,9 @@ namespace JChessV3
         public const int C_WHITE_ROOK = 41;
         public const int ENP_BLACK_PAWN = -11;
         public const int ENP_WHITE_PAWN = 11;
+
+        public const int WHITE = 10;
+        public const int BLACK = -10;
 
         #endregion
     }
