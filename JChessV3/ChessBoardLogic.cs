@@ -57,9 +57,9 @@ namespace JChessV3
 
             chessBoardTestArr = new int[8, 8]
               { {-41,0, 0, 0,-61, 0, 0,-41 },
-                {-1,-1,-1, 0, 0, 0, 0,-1 },
+                {-1, 0,-1, 0, 0, 0, 0,-1 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 3, 0 },
+                { 0,-1, 1, 0, 0, 0, 3, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 1, 1, 1, 0, 0, 1, 1, 1 },
@@ -85,8 +85,8 @@ namespace JChessV3
         /// </summary>
         public void ChessBoardReset()
         {
-            //Array.Copy(chessBoardResetArr, 0, chessBoardPieces, 0, 64);
-            Array.Copy(chessBoardTestArr, 0, chessBoardPieces, 0, 64);
+            Array.Copy(chessBoardResetArr, 0, chessBoardPieces, 0, 64);
+            //Array.Copy(chessBoardTestArr, 0, chessBoardPieces, 0, 64);
         }
 
         /// <summary>

@@ -33,6 +33,9 @@ namespace JChessV3
         Texture2D whiteKnightSprite;
         Texture2D whitePawnSprite;
 
+        Texture2D whiteElephantSprite;
+        Texture2D blackElephantSprite;
+
         Texture2D rect;
         #endregion
 
@@ -103,6 +106,10 @@ namespace JChessV3
             whiteBishopSprite = Content.Load<Texture2D>("WhiteBishop");
             whiteKnightSprite = Content.Load<Texture2D>("WhiteKnight");
             whitePawnSprite = Content.Load<Texture2D>("WhitePawn");
+
+            blackElephantSprite = Content.Load<Texture2D>("BlackElephant");
+            whiteElephantSprite = Content.Load<Texture2D>("WhiteElephant");
+
 
             rect = new Texture2D(GraphicsDevice, 1, 1);
             rect.SetData(new[] { Color.White });
@@ -330,14 +337,17 @@ namespace JChessV3
                 case Const.WHITE_ROOK: tempTexture = whiteRookSprite; break;
                 case Const.WHITE_BISHOP: tempTexture = whiteBishopSprite; break;
                 case Const.WHITE_KNIGHT: tempTexture = whiteKnightSprite; break;
-                case Const.WHITE_PAWN: tempTexture = whitePawnSprite; break;
+                //case Const.WHITE_PAWN: tempTexture = whitePawnSprite; break;
+                case Const.WHITE_PAWN: tempTexture = whiteElephantSprite; break;
 
-                case Const.BLACK_PAWN: tempTexture = blackPawnSprite; break;
+                case Const.BLACK_PAWN: tempTexture = blackElephantSprite; break;
+                //case Const.BLACK_PAWN: tempTexture = blackPawnSprite; break;
                 case Const.BLACK_KNIGHT: tempTexture = blackKnightSprite; break;
                 case Const.BLACK_BISHOP: tempTexture = blackBishopSprite; break;
                 case Const.BLACK_ROOK: tempTexture = blackRookSprite; break;
                 case Const.BLACK_QUEEN: tempTexture = blackQueenSprite; break;
                 case Const.BLACK_KING: tempTexture = blackKingSprite; break;
+
 
                 case Const.C_BLACK_KING: tempTexture = blackKingSprite; break;
                 case Const.C_WHITE_KING: tempTexture = whiteKingSprite; break;

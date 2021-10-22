@@ -82,5 +82,10 @@ namespace JChessV3.Pieces.BlackPieces
 
             return possiblePawnThreats;
         }
+
+        //public int[,] GeneratePins(int[,] inputBoard, int pinnedColor)
+        //{
+
+        //}
     }
 }
