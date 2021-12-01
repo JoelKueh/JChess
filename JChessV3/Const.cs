@@ -52,5 +52,9 @@ namespace JChessV3
         #endregion
 
         #region Move Shortcut
+
+
+
+        #endregion Move Shortcut
     }
 }
