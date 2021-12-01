@@ -50,5 +50,7 @@ namespace JChessV3
         public const int BLACK = -10;
 
         #endregion
+
+        #region Move Shortcut
     }
 }

@@ -38,6 +38,16 @@ namespace JChessV3.Pieces.WhitePieces
                 {
                     possiblePawnMoves[row - 1, column + 1] = -1;
                 }
+
+                if (column + 1 < 8 && inputBoard[row, column + 1] == -11)
+                {
+                    possiblePawnMoves[row - 1, column + 1] = 2;
+                }
+
+                if (column + 1 < 8 && inputBoard[row, column - 1] == -11)
+                {
+                    possiblePawnMoves[row - 1, column + 1] = 2;
+                }
             }
             
             if (row == 6)

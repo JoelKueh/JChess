@@ -54,6 +54,15 @@ namespace JChessV3
         }
         private HeldPiece heldPiece;
 
+        struct Move
+        {
+            public int startColumn;
+            public int startRow;
+            public int endColumn;
+            public int endRow;
+        }
+        private Move userMove;
+
 
         int[] columnPositions = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         int[] rowPositions = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -83,6 +92,11 @@ namespace JChessV3
             myChessBoard = new ChessBoardLogic();
             myChessBoard.ChessBoardReset();
 
+            userMove.startColumn = -1;
+            userMove.startRow = -1;
+            userMove.endColumn = -1;
+            userMove.endRow = -1;
+
             base.Initialize();
         }
 
@@ -107,8 +121,8 @@ namespace JChessV3
             whiteKnightSprite = Content.Load<Texture2D>("WhiteKnight");
             whitePawnSprite = Content.Load<Texture2D>("WhitePawn");
 
-            blackElephantSprite = Content.Load<Texture2D>("BlackElephant");
-            whiteElephantSprite = Content.Load<Texture2D>("WhiteElephant");
+            //blackElephantSprite = Content.Load<Texture2D>("BlackElephant");
+            //whiteElephantSprite = Content.Load<Texture2D>("WhiteElephant");
 
 
             rect = new Texture2D(GraphicsDevice, 1, 1);
@@ -139,13 +153,14 @@ namespace JChessV3
 
             DrawChessBoardFromCenter(960, 540, 800);
 
-            if(heldPiece.piece != 0)
+            if (heldPiece.piece != 0)
             {
                 // DEBUG
-                //DrawHeldPieceMoves(myChessBoard.GenerateDangerSquares(6));
-                //DrawHeldPieceMoves(myChessBoard.GetPieceThreats(heldPiece.column, heldPiece.row));
+                //DrawHeldPieceMoves(myChessBoard.GenerateChessBoardDangerSquares(6));
+                //DrawHeldPieceMoves(myChessBoard.GetChessBoardThreats(heldPiece.column, heldPiece.row));
 
-                DrawHeldPieceMoves(myChessBoard.GetPieceMoves(heldPiece.column, heldPiece.row));
+                //DrawHeldPieceMoves(myChessBoard.GetChessBoardMoves(heldPiece.column, heldPiece.row));
+                DrawHeldPieceMoves(myChessBoard.GetPinAdjPieceMoves(heldPiece.column, heldPiece.row));
                 DrawAllPiecesWithSkip(heldPiece.column, heldPiece.row);
                 DrawHeldPiece(heldPiece.piece);
             }
@@ -183,7 +198,7 @@ namespace JChessV3
                 for (int row = 0; row < 8; row++)
                 {
                     Color tempColor;
-                    if((column + 7 * row) % 2 == 1)
+                    if ((column + 7 * row) % 2 == 1)
                     {
                         tempColor = myConst.darkSquare;
                     }
@@ -215,7 +230,7 @@ namespace JChessV3
             {
                 for (int row = 0; row < 8; row++)
                 {
-                    Color tempColor = new Color(0,0,0);
+                    Color tempColor = new Color(0, 0, 0);
                     //Debug.WriteLine(inputArray[column, row]);
                     if (inputArray[row, column] != 0)
                     {
@@ -223,7 +238,7 @@ namespace JChessV3
                         {
                             tempColor = myConst.freeSquare;
                         }
-                        else if(inputArray[row, column] == -1)
+                        else if (inputArray[row, column] == -1)
                         {
                             tempColor = myConst.takeSquare;
                         }
@@ -262,11 +277,11 @@ namespace JChessV3
         /// <param name="rowSkip"></param>
         private void DrawAllPiecesWithSkip(int columnSkip, int rowSkip)
         {
-            for(int column = 0; column < 8; column++)
+            for (int column = 0; column < 8; column++)
             {
-                for(int row = 0; row < 8; row++)
+                for (int row = 0; row < 8; row++)
                 {
-                    if(column != columnSkip || row != rowSkip)
+                    if (column != columnSkip || row != rowSkip)
                     {
                         DrawPiece(column, row, myChessBoard.GetChessBoardSquare(column, row));
                     }
@@ -337,11 +352,13 @@ namespace JChessV3
                 case Const.WHITE_ROOK: tempTexture = whiteRookSprite; break;
                 case Const.WHITE_BISHOP: tempTexture = whiteBishopSprite; break;
                 case Const.WHITE_KNIGHT: tempTexture = whiteKnightSprite; break;
-                //case Const.WHITE_PAWN: tempTexture = whitePawnSprite; break;
-                case Const.WHITE_PAWN: tempTexture = whiteElephantSprite; break;
+                case Const.WHITE_PAWN: tempTexture = whitePawnSprite; break;
+                case Const.ENP_WHITE_PAWN: tempTexture = whitePawnSprite; break;
+                //case Const.WHITE_PAWN: tempTexture = whiteElephantSprite; break;
 
-                case Const.BLACK_PAWN: tempTexture = blackElephantSprite; break;
-                //case Const.BLACK_PAWN: tempTexture = blackPawnSprite; break;
+                //case Const.BLACK_PAWN: tempTexture = blackElephantSprite; break;
+                case Const.ENP_BLACK_PAWN: tempTexture = blackPawnSprite; break;
+                case Const.BLACK_PAWN: tempTexture = blackPawnSprite; break;
                 case Const.BLACK_KNIGHT: tempTexture = blackKnightSprite; break;
                 case Const.BLACK_BISHOP: tempTexture = blackBishopSprite; break;
                 case Const.BLACK_ROOK: tempTexture = blackRookSprite; break;
@@ -390,6 +407,9 @@ namespace JChessV3
                     heldPiece.piece = myChessBoard.GetChessBoardSquare(heldPiece.column, heldPiece.row);
                 }
 
+                userMove.startColumn = heldPiece.column;
+                userMove.startRow = heldPiece.column;
+
                 //Debug.Write(CheckMouseColumn() + 1);
                 //Debug.Write(", ");
                 //Debug.WriteLine(CheckMouseRow() + 1);
@@ -402,6 +422,9 @@ namespace JChessV3
                 heldPiece.column = 0;
                 heldPiece.row = 0;
                 heldPiece.piece = 0;
+
+                userMove.endColumn = CheckMouseColumn();
+                userMove.endRow = CheckMouseRow();
             }
         }
     }
