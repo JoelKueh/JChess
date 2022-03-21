@@ -146,14 +146,14 @@ namespace JChessV3.Pieces.WhitePieces
                 int row_i = row - i;
                 if (row_i >= 0)
                 {
-                    if (inputArr[row_i, column] != 0)
+                    if (inputArr[row_i, column] == 0 || inputArr[row_i, column] == Const.BLACK_KING || inputArr[row_i, column] == Const.C_BLACK_KING)
                     {
                         possibleRookThreats[row_i, column] = 1;
-                        stopped = true;
                     }
                     else
                     {
                         possibleRookThreats[row_i, column] = 1;
+                        stopped = true;
                     }
                 }
                 else
@@ -168,14 +168,14 @@ namespace JChessV3.Pieces.WhitePieces
                 int row_i = row + i;
                 if (row_i < 8)
                 {
-                    if (inputArr[row_i, column] != 0)
+                    if (inputArr[row_i, column] == 0 || inputArr[row_i, column] == Const.BLACK_KING || inputArr[row_i, column] == Const.C_BLACK_KING)
                     {
                         possibleRookThreats[row_i, column] = 1;
-                        stopped = true;
                     }
                     else
                     {
                         possibleRookThreats[row_i, column] = 1;
+                        stopped = true;
                     }
                 }
                 else
@@ -190,14 +190,14 @@ namespace JChessV3.Pieces.WhitePieces
                 int col_i = column - i;
                 if (col_i >= 0)
                 {
-                    if (inputArr[row, col_i] != 0)
+                    if (inputArr[row, col_i] == 0 || inputArr[row, col_i] == Const.BLACK_KING || inputArr[row, col_i] == Const.C_BLACK_KING)
                     {
                         possibleRookThreats[row, col_i] = 1;
-                        stopped = true;
                     }
                     else
                     {
                         possibleRookThreats[row, col_i] = 1;
+                        stopped = true;
                     }
                 }
                 else
@@ -212,14 +212,14 @@ namespace JChessV3.Pieces.WhitePieces
                 int col_i = column + i;
                 if (col_i < 8)
                 {
-                    if (inputArr[row, col_i] != 0)
+                    if (inputArr[row, col_i] == 0 || inputArr[row, col_i] == Const.BLACK_KING || inputArr[row, col_i] == Const.C_BLACK_KING)
                     {
                         possibleRookThreats[row, col_i] = 1;
-                        stopped = true;
                     }
                     else
                     {
                         possibleRookThreats[row, col_i] = 1;
+                        stopped = true;
                     }
                 }
                 else

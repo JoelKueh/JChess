@@ -46,8 +46,8 @@ namespace JChessV3
         public const int ENP_BLACK_PAWN = -11;
         public const int ENP_WHITE_PAWN = 11;
 
-        public const int WHITE = 10;
-        public const int BLACK = -10;
+        public const int WHITE = 1;
+        public const int BLACK = -1;
 
         #endregion
 

@@ -139,7 +139,7 @@ namespace JChessV3.Pieces.WhitePieces
                 {
                     if (inputArr[7, 1] == 0 && inputArr[7, 2] == 0 && inputArr[7, 3] == 0 && dangerSquares[7, 1] == 0 && dangerSquares[7, 2] == 0 && dangerSquares[7, 3] == 0)
                     {
-                        preCastledMoves[7, 2] = 2;
+                        preCastledMoves[7, 2] = 3;
                     }
                 }
 
@@ -147,7 +147,7 @@ namespace JChessV3.Pieces.WhitePieces
                 {
                     if (inputArr[7, 6] == 0 && inputArr[7, 5] == 0 && dangerSquares[7, 6] == 0 && dangerSquares[7, 5] == 0)
                     {
-                        preCastledMoves[7, 6] = 2;
+                        preCastledMoves[7, 6] = 4;
                     }
                 }
             }

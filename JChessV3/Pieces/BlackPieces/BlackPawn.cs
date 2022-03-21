@@ -34,7 +34,7 @@ namespace JChessV3.Pieces.BlackPieces
                     possiblePawnMoves[row + 1, column - 1] = -1;
                 }
 
-                if (column + 1 < 8 && inputBoard[row - 1, column + 1] > 0)
+                if (column + 1 < 8 && inputBoard[row + 1, column + 1] > 0)
                 {
                     possiblePawnMoves[row + 1, column + 1] = -1;
                 }
@@ -44,9 +44,9 @@ namespace JChessV3.Pieces.BlackPieces
                     possiblePawnMoves[row + 1, column + 1] = 2;
                 }
 
-                if (column + 1 < 8 && inputBoard[row, column - 1] == 11)
+                if (column - 1 >= 0 && inputBoard[row, column - 1] == 11)
                 {
-                    possiblePawnMoves[row + 1, column + 1] = 2;
+                    possiblePawnMoves[row + 1, column - 1] = 2;
                 }
             }
             
@@ -58,7 +58,7 @@ namespace JChessV3.Pieces.BlackPieces
 
                     if (inputBoard[row + 2, column] == 0)
                     {
-                        possiblePawnMoves[row + 2, column] = 1;
+                        possiblePawnMoves[row + 2, column] = -11;
                     }
                 }
             }
@@ -92,10 +92,5 @@ namespace JChessV3.Pieces.BlackPieces
 
             return possiblePawnThreats;
         }
-
-        //public int[,] GeneratePins(int[,] inputBoard, int pinnedColor)
-        //{
-
-        //}
     }
 }

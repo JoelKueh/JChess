@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 // DEBUG
+using System.Diagnostics;
 
 namespace JChessV3
 {
@@ -83,7 +84,9 @@ namespace JChessV3
             // Setting up some value things
             _graphics.PreferredBackBufferWidth = 1920;
             _graphics.PreferredBackBufferHeight = 1080;
-            _graphics.IsFullScreen = true;
+            
+            // TODO: Make Fullscreen toggleable
+            _graphics.IsFullScreen = false;
 
             _graphics.ApplyChanges();
 
@@ -156,11 +159,11 @@ namespace JChessV3
             if (heldPiece.piece != 0)
             {
                 // DEBUG
-                //DrawHeldPieceMoves(myChessBoard.GenerateChessBoardDangerSquares(6));
+                //DrawHeldPieceMoves(myChessBoard.GenerateChessBoardDangerSquares(-6));
                 //DrawHeldPieceMoves(myChessBoard.GetChessBoardThreats(heldPiece.column, heldPiece.row));
 
                 //DrawHeldPieceMoves(myChessBoard.GetChessBoardMoves(heldPiece.column, heldPiece.row));
-                DrawHeldPieceMoves(myChessBoard.GetPinAdjPieceMoves(heldPiece.column, heldPiece.row));
+                DrawHeldPieceMoves(myChessBoard.GetMovesIfTurn(heldPiece.column, heldPiece.row));
                 DrawAllPiecesWithSkip(heldPiece.column, heldPiece.row);
                 DrawHeldPiece(heldPiece.piece);
             }
@@ -234,7 +237,7 @@ namespace JChessV3
                     //Debug.WriteLine(inputArray[column, row]);
                     if (inputArray[row, column] != 0)
                     {
-                        if (inputArray[row, column] == 1)
+                        if (inputArray[row, column] == 1 || inputArray[row, column] == 11 || inputArray[row, column] == -11)
                         {
                             tempColor = myConst.freeSquare;
                         }
@@ -242,7 +245,7 @@ namespace JChessV3
                         {
                             tempColor = myConst.takeSquare;
                         }
-                        else if (inputArray[row, column] == 2)
+                        else if (inputArray[row, column] == 2 || inputArray[row, column] == 3 || inputArray[row, column] == 4)
                         {
                             tempColor = myConst.specialMove;
                         }
@@ -408,7 +411,7 @@ namespace JChessV3
                 }
 
                 userMove.startColumn = heldPiece.column;
-                userMove.startRow = heldPiece.column;
+                userMove.startRow = heldPiece.row;
 
                 //Debug.Write(CheckMouseColumn() + 1);
                 //Debug.Write(", ");
@@ -416,15 +419,23 @@ namespace JChessV3
 
                 //Debug.WriteLine(heldPiece.piece);
             }
-            else if (mouseState.LeftButton == ButtonState.Released)
+            else if (mouseState.LeftButton == ButtonState.Released && mouseLeftPressed)
             {
+                userMove.endColumn = CheckMouseColumn();
+                userMove.endRow = CheckMouseRow();
+
+                Debug.WriteLine(userMove.startColumn + " | " + userMove.startRow);
+                Debug.WriteLine(userMove.endColumn + " | " + userMove.endRow);
+
+                if (userMove.startColumn != -1 && userMove.startRow != -1 && userMove.endColumn != -1 && userMove.endRow != -1)
+                {
+                    myChessBoard.AttemptMove(userMove.startColumn, userMove.startRow, userMove.endColumn, userMove.endRow);
+                }
+
                 mouseLeftPressed = false;
                 heldPiece.column = 0;
                 heldPiece.row = 0;
                 heldPiece.piece = 0;
-
-                userMove.endColumn = CheckMouseColumn();
-                userMove.endRow = CheckMouseRow();
             }
         }
     }

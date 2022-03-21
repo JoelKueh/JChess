@@ -59,13 +59,13 @@ namespace JChessV3
 
             chessBoardTestArr = new int[8, 8]
               { { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { -5, 0, 0, 1,-11, 0, 0, 6 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0,-3, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0,-61, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 } };
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0,-4, 0, 3, 0, 0, 0, 0 } };
 
             myWhitePawn = new WhitePawn();
             myWhiteBishop = new WhiteBishop();
@@ -85,14 +85,56 @@ namespace JChessV3
         public void AttemptMove(int startColumn, int startRow, int endColumn, int endRow)
         {
             int[,] moveStorage = GetMovesIfTurn(startColumn, startRow);
-            if (moveStorage[endRow, endColumn] == 1)
+            if (moveStorage[endRow, endColumn] == 1 || moveStorage[endRow, endColumn] == -1)
             {
+                ClearEnpassant();
                 chessBoardPieces[endRow, endColumn] = chessBoardPieces[startRow, startColumn];
                 chessBoardPieces[startRow, startColumn] = 0;
+                whiteTurn = !whiteTurn;
+                //CheckForMate();
+            }
+            else if (moveStorage[endRow, endColumn] == Const.ENP_WHITE_PAWN)
+            {
+                ClearEnpassant();
+                chessBoardPieces[endRow, endColumn] = Const.ENP_WHITE_PAWN;
+                chessBoardPieces[startRow, startColumn] = 0;
+                whiteTurn = !whiteTurn;
+                //CheckForMate();
+            }
+            else if (moveStorage[endRow, endColumn] == Const.ENP_BLACK_PAWN)
+            {
+                ClearEnpassant();
+                chessBoardPieces[endRow, endColumn] = Const.ENP_BLACK_PAWN;
+                chessBoardPieces[startRow, startColumn] = 0;
+                whiteTurn = !whiteTurn;
+                //CheckForMate();
             }
             else if (moveStorage[endRow, endColumn] == 2)
             {
-                
+                ClearEnpassant();
+                chessBoardPieces[endRow, endColumn] = chessBoardPieces[startRow, startColumn];
+                chessBoardPieces[startRow, endColumn] = 0;
+                chessBoardPieces[startRow, startColumn] = 0;
+                whiteTurn = !whiteTurn;
+                //CheckForMate();
+            }
+            else if (moveStorage[endRow, endColumn] == 3)
+            {
+                ClearEnpassant();
+                chessBoardPieces[endRow, endColumn] = chessBoardPieces[startRow, startColumn];
+                chessBoardPieces[startRow, 3] = chessBoardPieces[startRow, 0];
+                chessBoardPieces[startRow, 0] = 0;
+                whiteTurn = !whiteTurn;
+                //CheckForMate();
+            }
+            else if (moveStorage[endRow, endColumn] == 4)
+            {
+                ClearEnpassant();
+                chessBoardPieces[endRow, endColumn] = chessBoardPieces[startRow, startColumn];
+                chessBoardPieces[startRow, 5] = chessBoardPieces[startRow, 7];
+                chessBoardPieces[startRow, 7] = 0;
+                whiteTurn = !whiteTurn;
+                //CheckForMate();
             }
         }
 
@@ -106,11 +148,11 @@ namespace JChessV3
         {
             if (chessBoardPieces[row, column] > 0 && whiteTurn)
             {
-                return GetChessBoardMoves(column, row);
+                return GetFinalMoveset(column, row);
             }
             else if (chessBoardPieces[row, column] < 0 && !whiteTurn)
             {
-                return GetChessBoardMoves(column, row);
+                return GetFinalMoveset(column, row);
             }
             else
             {
@@ -123,23 +165,10 @@ namespace JChessV3
         /// </summary>
         public void ChessBoardReset()
         {
-            //Array.Copy(chessBoardResetArr, 0, chessBoardPieces, 0, 64);
-            Array.Copy(chessBoardTestArr, 0, chessBoardPieces, 0, 64);
-        }
+            whiteTurn = true;
 
-        /// <summary>
-        /// Prints the whole chess board array to the Output. (Will be deleted later).
-        /// </summary>
-        /// <param name="arr"></param>
-        public void PrintChessBoardArray(int[,] arr)
-        {
-            for (int column = 0; column < 8; column++)
-            {
-                for (int row = 0; row < 8; row++)
-                {
-                    Debug.Write(chessBoardPieces[row, column]);
-                }
-            }
+            Array.Copy(chessBoardResetArr, 0, chessBoardPieces, 0, 64);
+            //Array.Copy(chessBoardTestArr, 0, chessBoardPieces, 0, 64);
         }
 
         /// <summary>
@@ -194,7 +223,8 @@ namespace JChessV3
                 case Const.C_BLACK_ROOK: return myBlackRook.GenerateMoves(inputBoard, row, column);
                 case Const.C_WHITE_ROOK: return myWhiteRook.GenerateMoves(inputBoard, row, column);
 
-                //case Const.C_BLACK_KING: return myBlackKing.GenerateMoves
+                case Const.ENP_BLACK_PAWN: return myBlackPawn.GenerateMoves(inputBoard, row, column);
+                case Const.ENP_WHITE_PAWN: return myWhitePawn.GenerateMoves(inputBoard, row, column);
             }
             return new int[8,8];
         }
@@ -232,6 +262,10 @@ namespace JChessV3
                 case Const.C_WHITE_KING: return myWhiteKing.GenerateThreats(inputBoard, row, column);
                 case Const.C_BLACK_ROOK: return myBlackRook.GenerateThreats(inputBoard, row, column);
                 case Const.C_WHITE_ROOK: return myWhiteRook.GenerateThreats(inputBoard, row, column);
+
+                case Const.ENP_BLACK_PAWN: return myBlackPawn.GenerateThreats(inputBoard, row, column);
+                case Const.ENP_WHITE_PAWN: return myWhitePawn.GenerateThreats(inputBoard, row, column);
+
             }
             return new int[8, 8];
         }
@@ -322,16 +356,19 @@ namespace JChessV3
             int pinningPieceY = -1;
 
             if ( // the piece at (row, column) is a pawn and is next to an enpassant pawn
-                   (inputArr[row, column] == Const.WHITE_PAWN && (inputArr[row, column - 1] == Const.ENP_BLACK_PAWN || inputArr[row, column + 1] == Const.ENP_BLACK_PAWN)) ||
-                   (inputArr[row, column] == Const.BLACK_PAWN && (inputArr[row, column - 1] == Const.ENP_WHITE_PAWN || inputArr[row, column + 1] == Const.ENP_WHITE_PAWN))
+                   (inputArr[row, column] == Const.WHITE_PAWN && (column - 1 >= 0 && (inputArr[row, column - 1] == Const.ENP_BLACK_PAWN) || (column + 1 <= 7 && inputArr[row, column + 1] == Const.ENP_BLACK_PAWN))) ||
+                   (inputArr[row, column] == Const.BLACK_PAWN && (column - 1 >= 0 && (inputArr[row, column - 1] == Const.ENP_WHITE_PAWN) || (column + 1 <= 7 && inputArr[row, column + 1] == Const.ENP_WHITE_PAWN)))
                )
             {
+                // Create temporary arrays to store the chessboard so we can run tests to see if the king would be in check.
                 int[,] tempSecondBoard = new int[8, 8];
                 Array.Copy(inputArr, 0, tempSecondBoard, 0, 64);
 
                 int[,] tempDangerSquares = new int[8, 8];
 
-                if (inputArr[row, column - 1] == Const.ENP_BLACK_PAWN)
+                // Check the inputted board to see whether or not there is a possible enpassant, if there is, generate the danger squares
+                // in the temporary array to see if the king would be in danger after the move happened.
+                if (column - 1 >= 0 && inputArr[row, column - 1] == Const.ENP_BLACK_PAWN)
                 {
                     tempSecondBoard[row, column - 1] = 0;
                     tempSecondBoard[row, column] = 0;
@@ -339,7 +376,7 @@ namespace JChessV3
 
                     tempDangerSquares = GenerateDangerSquares(tempSecondBoard, Const.WHITE);
                 }
-                else if (inputArr[row, column + 1] == Const.ENP_BLACK_PAWN)
+                else if (column + 1 <= 7 && inputArr[row, column + 1] == Const.ENP_BLACK_PAWN)
                 {
                     tempSecondBoard[row, column + 1] = 0;
                     tempSecondBoard[row, column] = 0;
@@ -347,7 +384,7 @@ namespace JChessV3
 
                     tempDangerSquares = GenerateDangerSquares(tempSecondBoard, Const.WHITE);
                 }
-                else if (inputArr[row, column - 1] == Const.ENP_WHITE_PAWN)
+                else if (column - 1 >= 0 && inputArr[row, column - 1] == Const.ENP_WHITE_PAWN)
                 {
                     tempSecondBoard[row, column - 1] = 0;
                     tempSecondBoard[row, column] = 0;
@@ -355,7 +392,7 @@ namespace JChessV3
 
                     tempDangerSquares = GenerateDangerSquares(tempSecondBoard, Const.BLACK);
                 }
-                else if (inputArr[row, column + 1] == Const.ENP_BLACK_PAWN)
+                else if (column + 1 <= 7 && inputArr[row, column + 1] == Const.ENP_BLACK_PAWN)
                 {
                     tempSecondBoard[row, column + 1] = 0;
                     tempSecondBoard[row, column] = 0;
@@ -364,6 +401,7 @@ namespace JChessV3
                     tempDangerSquares = GenerateDangerSquares(tempSecondBoard, Const.BLACK);
                 }
 
+                // Run through every square in the tempDangerSquares array to see if there is a king that is in check.
                 bool kingInCheck = false;
                 if (white)
                 {
@@ -371,7 +409,7 @@ namespace JChessV3
                     {
                         for (int column_1 = 0; column_1 < 8; column_1++)
                         {
-                            if (tempDangerSquares[row_1, column_1] != 0 && tempSecondBoard[row_1, column_1] == Const.WHITE_KING)
+                            if (tempDangerSquares[row_1, column_1] != 0 && (tempSecondBoard[row_1, column_1] == Const.WHITE_KING || tempSecondBoard[row_1, column_1] == Const.C_WHITE_KING))
                             {
                                 kingInCheck = true;
                             }
@@ -384,7 +422,7 @@ namespace JChessV3
                     {
                         for (int column_1 = 0; column_1 < 8; column_1++)
                         {
-                            if (tempDangerSquares[row_1, column_1] != 0 && tempSecondBoard[row_1, column_1] == Const.BLACK_KING)
+                            if (tempDangerSquares[row_1, column_1] != 0 && (tempSecondBoard[row_1, column_1] == Const.BLACK_KING || tempSecondBoard[row_1, column_1] == Const.C_BLACK_KING))
                             {
                                 kingInCheck = true;
                             }
@@ -392,12 +430,28 @@ namespace JChessV3
                     }
                 }
 
+                // If there is a king in check, then get rid of the affected enpassant moves (but not the normal takes)
                 if (kingInCheck)
                 {
-                    inputMoves[row - 1, column - 1] = 0;
-                    inputMoves[row + 1, column - 1] = 0;
-                    inputMoves[row - 1, column + 1] = 0;
-                    inputMoves[row + 1, column + 1] = 0;
+                    if(inputMoves[row - 1, column - 1] == 2)
+                    {
+                        inputMoves[row - 1, column - 1] = 0;
+                    }
+                    
+                    if(inputMoves[row + 1, column - 1] == 2)
+                    {
+                        inputMoves[row + 1, column - 1] = 0;
+                    }
+
+                    if(inputMoves[row - 1, column + 1] == 2)
+                    {
+                        inputMoves[row - 1, column + 1] = 0;
+                    }
+
+                    if (inputMoves[row + 1, column + 1] == 2)
+                    {
+                        inputMoves[row + 1, column + 1] = 0;
+                    }
                 }
 
                 Array.Copy(inputArr, 0, tempSecondBoard, 0, 64);
@@ -431,7 +485,7 @@ namespace JChessV3
                     {
                         for (int column_1 = 0; column_1 < 8; column_1++)
                         {
-                            if (tempDangerSquares[row_1, column_1] != 0 && tempSecondBoard[row_1, column_1] == Const.WHITE_KING)
+                            if (tempDangerSquares[row_1, column_1] != 0 && (tempSecondBoard[row_1, column_1] == Const.WHITE_KING || tempSecondBoard[row_1, column_1] == Const.C_WHITE_KING))
                             {
                                 kingInCheck = true;
                             }
@@ -444,7 +498,7 @@ namespace JChessV3
                     {
                         for (int column_1 = 0; column_1 < 8; column_1++)
                         {
-                            if (tempDangerSquares[row_1, column_1] != 0 && tempSecondBoard[row_1, column_1] == Const.BLACK_KING)
+                            if (tempDangerSquares[row_1, column_1] != 0 && (tempSecondBoard[row_1, column_1] == Const.BLACK_KING || tempSecondBoard[row_1, column_1] == Const.C_BLACK_KING))
                             {
                                 kingInCheck = true;
                             }
@@ -470,7 +524,7 @@ namespace JChessV3
                     {
                         for (int column_1 = 0; column_1 < 8 && kingX == -1; column_1++)
                         {
-                            if (queenThreatStorage[row_1, column_1] == 1 && inputArr[row_1, column_1] == Const.WHITE_KING)
+                            if (queenThreatStorage[row_1, column_1] == 1 && (inputArr[row_1, column_1] == Const.WHITE_KING || inputArr[row_1, column_1] == Const.C_WHITE_KING))
                             {
                                 kingX = column_1;
                                 kingY = row_1;
@@ -483,7 +537,7 @@ namespace JChessV3
                         for (int column_1 = 0; column_1 < 8 && pinningPieceX == -1; column_1++)
                         {
                             if (queenThreatStorage[row_1, column_1] == 1 &&
-                                (inputArr[row_1, column_1] == Const.BLACK_QUEEN || inputArr[row_1, column_1] == Const.BLACK_ROOK || inputArr[row_1, column_1] == Const.BLACK_BISHOP))
+                                (inputArr[row_1, column_1] == Const.BLACK_QUEEN || inputArr[row_1, column_1] == Const.BLACK_ROOK || inputArr[row_1, column_1] == Const.C_BLACK_ROOK || inputArr[row_1, column_1] == Const.BLACK_BISHOP))
                             {
                                 if (queenThreatStorage[row_1, column_1] == 1)
                                 {
@@ -497,7 +551,7 @@ namespace JChessV3
                                     }
                                     else if (kingX - kingY == column_1 - row_1)
                                     {
-                                        if (inputArr[row_1, column_1] != Const.BLACK_ROOK)
+                                        if (inputArr[row_1, column_1] != Const.BLACK_ROOK && inputArr[row_1, column_1] != Const.C_BLACK_ROOK)
                                         {
                                             pinningPieceX = column_1;
                                             pinningPieceY = row_1;
@@ -575,7 +629,7 @@ namespace JChessV3
                     {
                         for (int column_1 = 0; column_1 < 8 && kingX == -1; column_1++)
                         {
-                            if (queenThreatStorage[row_1, column_1] == 1 && inputArr[row_1, column_1] == Const.BLACK_KING)
+                            if (queenThreatStorage[row_1, column_1] == 1 && (inputArr[row_1, column_1] == Const.BLACK_KING || inputArr[row_1, column_1] == Const.C_BLACK_KING))
                             {
                                 kingX = column_1;
                                 kingY = row_1;
@@ -588,7 +642,7 @@ namespace JChessV3
                         for (int column_1 = 0; column_1 < 8 && pinningPieceX == -1; column_1++)
                         {
                             if (queenThreatStorage[row_1, column_1] == 1 &&
-                                (inputArr[row_1, column_1] == Const.WHITE_QUEEN || inputArr[row_1, column_1] == Const.WHITE_ROOK || inputArr[row_1, column_1] == Const.WHITE_BISHOP))
+                                (inputArr[row_1, column_1] == Const.WHITE_QUEEN || inputArr[row_1, column_1] == Const.WHITE_ROOK || inputArr[row_1, column_1] == Const.C_WHITE_ROOK || inputArr[row_1, column_1] == Const.WHITE_BISHOP))
                             {
                                 if (queenThreatStorage[row_1, column_1] == 1)
                                 {
@@ -600,9 +654,9 @@ namespace JChessV3
                                             pinningPieceY = row_1;
                                         }
                                     }
-                                    else if (kingX - kingY == column_1 - row_1)
+                                    else if (kingX - kingY == column_1 - row_1 || kingX + kingY == column_1 + row_1)
                                     {
-                                        if (inputArr[row_1, column_1] != Const.WHITE_ROOK)
+                                        if (inputArr[row_1, column_1] != Const.WHITE_ROOK && inputArr[row_1, column_1] != Const.C_WHITE_ROOK)
                                         {
                                             pinningPieceX = column_1;
                                             pinningPieceY = row_1;
@@ -673,6 +727,274 @@ namespace JChessV3
                     return inputMoves;
                 }
             }
+        }
+        
+        public void ClearEnpassant()
+        {
+            for (int row_1 = 0; row_1 < 8; row_1++)
+            {
+                for (int column_1 = 0; column_1 < 8; column_1++)
+                {
+                    if (chessBoardPieces[row_1, column_1] == Const.ENP_BLACK_PAWN)
+                    {
+                        chessBoardPieces[row_1, column_1] = Const.BLACK_PAWN;
+                    }
+
+                    if (chessBoardPieces[row_1, column_1] == Const.ENP_WHITE_PAWN)
+                    {
+                        chessBoardPieces[row_1, column_1] = Const.WHITE_PAWN;
+                    }
+                }
+            }
+        }
+
+        public int[,] AdjustMovesIfInCheck(int[,] inputMoves, bool whiteTurn, int heldPiece)
+        {
+            int[,] outputMoves = new int[8, 8];
+            int defendingColor = 0;
+            int kingX = 0;
+            int kingY = 0;
+            if(whiteTurn)
+            {
+                defendingColor = 1;
+            }
+            else
+            {
+                defendingColor = -1;
+            }
+
+            if (heldPiece == defendingColor * Const.WHITE_KING || heldPiece == defendingColor * Const.C_WHITE_KING)
+            {
+                return inputMoves;
+            }
+
+            // First of all, uses the GenerateDangerSquares method to check if the king is in check.
+            bool inCheck = false;
+            int[,] tempDangerSquares = GenerateDangerSquares(chessBoardPieces, defendingColor);
+            for (int row_1 = 0; row_1 < 8 && kingX != -1; row_1++)
+            {
+                for (int column_1 = 0; column_1 < 8 && kingX != -1; column_1++)
+                {
+                    if (chessBoardPieces[row_1, column_1] == defendingColor * Const.WHITE_KING || chessBoardPieces[row_1, column_1] == defendingColor * Const.C_WHITE_KING)
+                    {
+                        kingX = column_1;
+                        kingY = row_1;
+                    }
+
+                    if (tempDangerSquares[row_1, column_1] == 1 && (chessBoardPieces[row_1, column_1] == defendingColor * Const.WHITE_KING || chessBoardPieces[row_1, column_1] == defendingColor * Const.C_WHITE_KING))
+                    {
+                        inCheck = true;
+                    }
+                }
+            }
+            if (!inCheck)
+            {
+                return inputMoves;
+            }
+
+            // If it is, check first for horses that are threatening the king.
+            // If there are any, then the only moves will be king moves and takes on the horse.
+            // We only worry about the position of the first knight because, if there are two, the only valid moves are king moves anyway. Those moves
+            // will be calculated with by using the danger squares map.
+            int[,] kingKnightMoves = myBlackKnight.GenerateThreats(chessBoardPieces, kingY, kingX);
+            int numOfKnightChecks = 0;
+            int knightX = -1;
+            int knightY = -1;
+            for (int row_1 = 0; row_1 < 8 && numOfKnightChecks < 2; row_1++)
+            {
+                for (int column_1 = 0; column_1 < 8 && numOfKnightChecks < 2; column_1++)
+                {
+                    if (kingKnightMoves[row_1, column_1] == 1 && chessBoardPieces[row_1, column_1] == defendingColor * Const.BLACK_KNIGHT)
+                    {
+                        numOfKnightChecks++;
+                        knightX = column_1;
+                        knightY = row_1;
+                    }
+                }
+            }
+            // Skip the rest of calculation if we already have 2 attackers.
+            if (numOfKnightChecks > 1)
+            {
+                return new int[8, 8];
+            }
+
+            // We only care about the first attacker for the same reason as the knights.
+            int[,] kingQueenMoves = new int[8,8];
+            if (defendingColor == Const.WHITE)
+            {
+                kingQueenMoves = myWhiteQueen.GenerateThreats(chessBoardPieces, kingY, kingX);
+            }
+            if (defendingColor == Const.BLACK)
+            { 
+                kingQueenMoves = myBlackQueen.GenerateThreats(chessBoardPieces, kingY, kingX);
+            }
+            int numOfOtherChecks = 0;
+            int checkingPieceX = -1;
+            int checkingPieceY = -1;
+            // Look through chessBoardPieces array and kingQueenMoves array simultaneously.
+            for (int row_1 = 0; row_1 < 8 && numOfOtherChecks + numOfKnightChecks < 2; row_1++)
+            {
+                for (int column_1 = 0; column_1 < 8 && numOfOtherChecks + numOfKnightChecks < 2; column_1++)
+                {
+                    // Check to see if there is a piece seen by the queenThreats method, then check to see if it is a Queen, Rook, or Bishop
+                    if (kingQueenMoves[row_1, column_1] == 1 &&
+                        (chessBoardPieces[row_1, column_1] == defendingColor * Const.BLACK_QUEEN || chessBoardPieces[row_1, column_1] == defendingColor * Const.BLACK_ROOK
+                        || chessBoardPieces[row_1, column_1] == defendingColor * Const.C_BLACK_ROOK || chessBoardPieces[row_1, column_1] == defendingColor * Const.BLACK_BISHOP))
+                    {
+                        //Check to see if the piece is on a straight ray or on a diagonal ray from the king.
+                        // If it's on a straight ray, then bishops don't count. If it's on a diagonal ray, then rooks don't count.
+                        if (kingX == column_1 || kingY == row_1)
+                        {
+                            if (chessBoardPieces[row_1, column_1] != defendingColor * Const.BLACK_BISHOP)
+                            {
+                                checkingPieceX = column_1;
+                                checkingPieceY= row_1;
+                                numOfOtherChecks++;
+                            }
+                        }
+                        else if (kingX - kingY == column_1 - row_1 || kingX + kingY == column_1 + row_1)
+                        {
+                            if (chessBoardPieces[row_1, column_1] != defendingColor * Const.BLACK_ROOK && chessBoardPieces[row_1, column_1] != defendingColor * Const.C_BLACK_ROOK)
+                            {
+                                checkingPieceX = column_1;
+                                checkingPieceY = row_1;
+                                numOfOtherChecks++;
+                            }
+                        }
+                    }
+                }
+            }
+            // Skip the rest of calculation if we already have 2 attackers.
+            if (numOfOtherChecks + numOfKnightChecks > 1)
+            {
+                return new int[8, 8];
+            }
+
+            // You get the picture, only care about the first attacking pawn.
+            int checkingPawnX = 0;
+            int checkingPawnY = kingY - defendingColor;
+            if (kingY - defendingColor >= 0 && kingX + 1 < 8 && chessBoardPieces[kingY - defendingColor, kingX + 1] == defendingColor * Const.BLACK_PAWN)
+            {
+                checkingPawnX = kingX + 1;
+                numOfOtherChecks++;
+            }
+            if (kingY - defendingColor >= 0 && kingX - 1 >= 0 && chessBoardPieces[kingY - defendingColor, kingX - 1] == defendingColor * Const.BLACK_PAWN)
+            {
+                checkingPawnX = kingX - 1;
+                numOfOtherChecks++;
+            }
+
+            if (numOfKnightChecks + numOfOtherChecks > 1)
+            {
+                return new int[8,8];
+            }
+            else if (numOfKnightChecks == 1)
+            {
+                if (inputMoves[knightY, knightX] == -1)
+                {
+                    outputMoves[knightY, knightX] = -1;
+                }
+                return outputMoves;
+            }
+            else
+            {
+                int stepDirX = 0;
+                int stepDirY = 0;
+                if (kingX == checkingPieceX)
+                {
+                    stepDirX = 0;
+                }
+                else if (kingX < checkingPieceX)
+                {
+                    stepDirX = -1;
+                }
+                else
+                {
+                    stepDirX = 1;
+                }
+
+                if (kingY == checkingPieceY)
+                {
+                    stepDirY = 0;
+                }
+                else if (kingY < checkingPieceY)
+                {
+                    stepDirY = -1;
+                }
+                else
+                {
+                    stepDirY = 1;
+                }
+
+                for (int row_1 = checkingPieceY, column_1 = checkingPieceX; row_1 < 8 && column_1 < 8 && row_1 >= 0 && column_1 >= 0; row_1 += stepDirY)
+                {
+                    outputMoves[row_1, column_1] = inputMoves[row_1, column_1];
+                    column_1 += stepDirX;
+                }
+
+                for (int row_1 = checkingPieceY, column_1 = checkingPieceX; row_1 < 8 && column_1 < 8 && row_1 >= 0 && column_1 >= 0; row_1 += stepDirY)
+                {
+                    outputMoves[row_1, column_1] = inputMoves[row_1, column_1];
+                    column_1 += stepDirX;
+                }
+
+                if (chessBoardPieces[checkingPawnY, checkingPawnX] == defendingColor * Const.BLACK_PAWN && inputMoves[checkingPawnY, checkingPawnX] == -1)
+                {
+                    outputMoves[checkingPawnY, checkingPawnX] = -1;
+                }
+
+                return outputMoves;
+            }
+        }
+
+        public int[,] AdjustMovesIfInCheck(int[,] inputMoves, bool whiteTurn, int startingRow, int startingColumn)
+        {
+            int heldPiece = chessBoardPieces[startingColumn, startingRow];
+            return AdjustMovesIfInCheck(inputMoves, whiteTurn, heldPiece);
+        }
+        public int[,] GetFinalMoveset(int row, int column)
+        {
+            return AdjustMovesIfInCheck(GetPinAdjPieceMoves(row, column), whiteTurn, row, column);
+        }
+
+        public bool CheckForMate()
+        {
+            for (int row = 0; row < 8; row++)
+            {
+                for (int column = 0; column < 8; column++)
+                {
+                    int[,] possibleMoves = new int[8, 8];
+                    if (chessBoardPieces[row, column] > 0 && whiteTurn)
+                    {
+                        possibleMoves = GetMovesIfTurn(row, column);
+                        for (int row_1 = 0; row_1 < 8; row++)
+                        {
+                            for (int column_1 = 0; column_1 < 8; column_1++)
+                            {
+                                if (possibleMoves[row_1, column_1] != 0)
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                    else if(chessBoardPieces[row, column] < 0 && !whiteTurn)
+                    {
+                        possibleMoves = GetMovesIfTurn(row, column);
+                        for (int row_1 = 0; row_1 < 8; row++)
+                        {
+                            for (int column_1 = 0; column_1 < 8; column_1++)
+                            {
+                                if (possibleMoves[row_1, column_1] != 0)
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
         }
     }
 }

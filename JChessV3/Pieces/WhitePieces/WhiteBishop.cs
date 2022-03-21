@@ -151,7 +151,7 @@ namespace JChessV3.Pieces.WhitePieces
                 int row_i = row - i;
                 if (col_i >= 0 && row_i >= 0)
                 {
-                    if (inputArr[row_i, col_i] == 0)
+                    if (inputArr[row_i, col_i] == 0 || inputArr[row_i, col_i] == Const.BLACK_KING || inputArr[row_i, col_i] == Const.C_BLACK_KING)
                     {
                         threats[row_i, col_i] = 1;
                     }
@@ -174,7 +174,7 @@ namespace JChessV3.Pieces.WhitePieces
                 int row_i = row - i;
                 if (col_i < 8 && row_i >= 0)
                 {
-                    if (inputArr[row_i, col_i] == 0)
+                    if (inputArr[row_i, col_i] == 0 || inputArr[row_i, col_i] == Const.BLACK_KING || inputArr[row_i, col_i] == Const.C_BLACK_KING)
                     {
                         threats[row_i, col_i] = 1;
                     }
@@ -197,7 +197,7 @@ namespace JChessV3.Pieces.WhitePieces
                 int row_i = row + i;
                 if (col_i >= 0 && row_i < 8)
                 {
-                    if (inputArr[row_i, col_i] == 0)
+                    if (inputArr[row_i, col_i] == 0 || inputArr[row_i, col_i] == Const.BLACK_KING || inputArr[row_i, col_i] == Const.C_BLACK_KING)
                     {
                         threats[row_i, col_i] = 1;
                     }
@@ -220,7 +220,7 @@ namespace JChessV3.Pieces.WhitePieces
                 int row_i = row + i;
                 if (col_i < 8 && row_i < 8)
                 {
-                    if (inputArr[row_i, col_i] == 0)
+                    if (inputArr[row_i, col_i] == 0 || inputArr[row_i, col_i] == Const.BLACK_KING || inputArr[row_i, col_i] == Const.C_BLACK_KING)
                     {
                         threats[row_i, col_i] = 1;
                     }
