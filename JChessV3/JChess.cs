@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 // DEBUG
+using System.Diagnostics;
 
 namespace JChessV3
 {
@@ -33,6 +34,9 @@ namespace JChessV3
         Texture2D whiteKnightSprite;
         Texture2D whitePawnSprite;
 
+        Texture2D whiteElephantSprite;
+        Texture2D blackElephantSprite;
+
         Texture2D rect;
         #endregion
 
@@ -50,6 +54,15 @@ namespace JChessV3
             public int row;
         }
         private HeldPiece heldPiece;
+
+        struct Move
+        {
+            public int startColumn;
+            public int startRow;
+            public int endColumn;
+            public int endRow;
+        }
+        private Move userMove;
 
 
         int[] columnPositions = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -71,7 +84,9 @@ namespace JChessV3
             // Setting up some value things
             _graphics.PreferredBackBufferWidth = 1920;
             _graphics.PreferredBackBufferHeight = 1080;
-            _graphics.IsFullScreen = true;
+            
+            // TODO: Make Fullscreen toggleable
+            _graphics.IsFullScreen = false;
 
             _graphics.ApplyChanges();
 
@@ -79,6 +94,11 @@ namespace JChessV3
 
             myChessBoard = new ChessBoardLogic();
             myChessBoard.ChessBoardReset();
+
+            userMove.startColumn = -1;
+            userMove.startRow = -1;
+            userMove.endColumn = -1;
+            userMove.endRow = -1;
 
             base.Initialize();
         }
@@ -103,6 +123,10 @@ namespace JChessV3
             whiteBishopSprite = Content.Load<Texture2D>("WhiteBishop");
             whiteKnightSprite = Content.Load<Texture2D>("WhiteKnight");
             whitePawnSprite = Content.Load<Texture2D>("WhitePawn");
+
+            //blackElephantSprite = Content.Load<Texture2D>("BlackElephant");
+            //whiteElephantSprite = Content.Load<Texture2D>("WhiteElephant");
+
 
             rect = new Texture2D(GraphicsDevice, 1, 1);
             rect.SetData(new[] { Color.White });
@@ -132,13 +156,14 @@ namespace JChessV3
 
             DrawChessBoardFromCenter(960, 540, 800);
 
-            if(heldPiece.piece != 0)
+            if (heldPiece.piece != 0)
             {
                 // DEBUG
-                //DrawHeldPieceMoves(myChessBoard.GenerateDangerSquares(6));
-                //DrawHeldPieceMoves(myChessBoard.GetPieceThreats(heldPiece.column, heldPiece.row));
+                //DrawHeldPieceMoves(myChessBoard.GenerateChessBoardDangerSquares(-6));
+                //DrawHeldPieceMoves(myChessBoard.GetChessBoardThreats(heldPiece.column, heldPiece.row));
 
-                DrawHeldPieceMoves(myChessBoard.GetPieceMoves(heldPiece.column, heldPiece.row));
+                //DrawHeldPieceMoves(myChessBoard.GetChessBoardMoves(heldPiece.column, heldPiece.row));
+                DrawHeldPieceMoves(myChessBoard.GetMovesIfTurn(heldPiece.column, heldPiece.row));
                 DrawAllPiecesWithSkip(heldPiece.column, heldPiece.row);
                 DrawHeldPiece(heldPiece.piece);
             }
@@ -176,7 +201,7 @@ namespace JChessV3
                 for (int row = 0; row < 8; row++)
                 {
                     Color tempColor;
-                    if((column + 7 * row) % 2 == 1)
+                    if ((column + 7 * row) % 2 == 1)
                     {
                         tempColor = myConst.darkSquare;
                     }
@@ -208,19 +233,19 @@ namespace JChessV3
             {
                 for (int row = 0; row < 8; row++)
                 {
-                    Color tempColor = new Color(0,0,0);
+                    Color tempColor = new Color(0, 0, 0);
                     //Debug.WriteLine(inputArray[column, row]);
                     if (inputArray[row, column] != 0)
                     {
-                        if (inputArray[row, column] == 1)
+                        if (inputArray[row, column] == 1 || inputArray[row, column] == 11 || inputArray[row, column] == -11)
                         {
                             tempColor = myConst.freeSquare;
                         }
-                        else if(inputArray[row, column] == -1)
+                        else if (inputArray[row, column] == -1)
                         {
                             tempColor = myConst.takeSquare;
                         }
-                        else if (inputArray[row, column] == 2)
+                        else if (inputArray[row, column] == 2 || inputArray[row, column] == 3 || inputArray[row, column] == 4)
                         {
                             tempColor = myConst.specialMove;
                         }
@@ -255,11 +280,11 @@ namespace JChessV3
         /// <param name="rowSkip"></param>
         private void DrawAllPiecesWithSkip(int columnSkip, int rowSkip)
         {
-            for(int column = 0; column < 8; column++)
+            for (int column = 0; column < 8; column++)
             {
-                for(int row = 0; row < 8; row++)
+                for (int row = 0; row < 8; row++)
                 {
-                    if(column != columnSkip || row != rowSkip)
+                    if (column != columnSkip || row != rowSkip)
                     {
                         DrawPiece(column, row, myChessBoard.GetChessBoardSquare(column, row));
                     }
@@ -331,13 +356,18 @@ namespace JChessV3
                 case Const.WHITE_BISHOP: tempTexture = whiteBishopSprite; break;
                 case Const.WHITE_KNIGHT: tempTexture = whiteKnightSprite; break;
                 case Const.WHITE_PAWN: tempTexture = whitePawnSprite; break;
+                case Const.ENP_WHITE_PAWN: tempTexture = whitePawnSprite; break;
+                //case Const.WHITE_PAWN: tempTexture = whiteElephantSprite; break;
 
+                //case Const.BLACK_PAWN: tempTexture = blackElephantSprite; break;
+                case Const.ENP_BLACK_PAWN: tempTexture = blackPawnSprite; break;
                 case Const.BLACK_PAWN: tempTexture = blackPawnSprite; break;
                 case Const.BLACK_KNIGHT: tempTexture = blackKnightSprite; break;
                 case Const.BLACK_BISHOP: tempTexture = blackBishopSprite; break;
                 case Const.BLACK_ROOK: tempTexture = blackRookSprite; break;
                 case Const.BLACK_QUEEN: tempTexture = blackQueenSprite; break;
                 case Const.BLACK_KING: tempTexture = blackKingSprite; break;
+
 
                 case Const.C_BLACK_KING: tempTexture = blackKingSprite; break;
                 case Const.C_WHITE_KING: tempTexture = whiteKingSprite; break;
@@ -380,14 +410,28 @@ namespace JChessV3
                     heldPiece.piece = myChessBoard.GetChessBoardSquare(heldPiece.column, heldPiece.row);
                 }
 
+                userMove.startColumn = heldPiece.column;
+                userMove.startRow = heldPiece.row;
+
                 //Debug.Write(CheckMouseColumn() + 1);
                 //Debug.Write(", ");
                 //Debug.WriteLine(CheckMouseRow() + 1);
 
                 //Debug.WriteLine(heldPiece.piece);
             }
-            else if (mouseState.LeftButton == ButtonState.Released)
+            else if (mouseState.LeftButton == ButtonState.Released && mouseLeftPressed)
             {
+                userMove.endColumn = CheckMouseColumn();
+                userMove.endRow = CheckMouseRow();
+
+                Debug.WriteLine(userMove.startColumn + " | " + userMove.startRow);
+                Debug.WriteLine(userMove.endColumn + " | " + userMove.endRow);
+
+                if (userMove.startColumn != -1 && userMove.startRow != -1 && userMove.endColumn != -1 && userMove.endRow != -1)
+                {
+                    myChessBoard.AttemptMove(userMove.startColumn, userMove.startRow, userMove.endColumn, userMove.endRow);
+                }
+
                 mouseLeftPressed = false;
                 heldPiece.column = 0;
                 heldPiece.row = 0;
